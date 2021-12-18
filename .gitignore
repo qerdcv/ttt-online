@@ -131,3 +131,6 @@ dmypy.json
 
 # NODE JS
 .node_modules
+
+# ide
+.idea
