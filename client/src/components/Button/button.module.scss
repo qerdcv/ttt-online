@@ -1,0 +1,28 @@
+@import "../../styles/colors.scss";
+
+.btn {
+  position: relative;
+  font-size: 20px;
+  padding: 10px 30px;
+  background: transparent;
+  border: 1px solid $black;
+  cursor: pointer;
+
+  transition: all .1s ease-in-out;
+
+  &:hover {
+    transform: scale(.95);
+  }
+
+  &:after {
+    content: "";
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    border: 1px solid $black;
+    top: 0;
+    left: 0;
+    transform: rotate(1deg);
+  }
+
+}

@@ -1,0 +1,11 @@
+.main {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  &Title {
+    margin: 20px 0;
+  }
+}
