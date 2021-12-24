@@ -5,7 +5,7 @@ export const QuickGame = () => {
   return (
     <main className={styles.main}>
       <h1 className={styles.mainTitle}>Quick Game</h1>
-      <Button value="Play !"/>
+      <Button value="Play !" classNames={[styles.mainBtn]}/>
     </main>
   )
 }
