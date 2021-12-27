@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Checkbox } from "components/Form";
 import styles from "components/QuickGame/PopUp/CreateRoom/createRoom.module.scss";
 import "styles/common.scss";
-import { Room } from "../../../../api/room";
+import { Room } from "api/room";
 
 export const CreateRoom = () => {
   const [isPrivate, setIsPrivate] = useState(false);
