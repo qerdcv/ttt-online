@@ -1,0 +1,19 @@
+@import "styles/colors";
+
+@mixin fuzzyBorder($radius: 0, $top: 0, $left: 0, $rotate: 1deg) {
+  position: relative;
+  padding: 10px;
+
+  &:after {
+    content: "";
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    border: 1px solid $black;
+    top: $top;
+    left: $left;
+    transform: rotate($rotate);
+    border-radius: $radius;
+    z-index: -1;
+  }
+}

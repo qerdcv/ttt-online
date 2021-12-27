@@ -1,0 +1,15 @@
+.startMenu {
+  display: flex;
+
+  flex-direction: column;
+  justify-content: space-around;
+
+  padding: 0 20px;
+
+  width: 100%;
+  height: 100%;
+
+  &Button {
+    font-size: 40px;
+  }
+}

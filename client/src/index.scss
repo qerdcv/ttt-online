@@ -1,4 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Ubuntu+Mono:wght@400;700&display=swap');
+@import "styles/colors";
+@import "styles/mixins";
 
 * {
   margin: 0;
@@ -16,4 +18,17 @@ body {
   padding: 0 60px;
   display: flex;
   flex-direction: column;
+}
+
+input {
+
+  margin: 10px 0;
+
+  &[type=text], &[type=password] {
+    width: 100%;
+    padding: 10px;
+    font-size: 25px;
+    border: 1px solid $black;
+  }
+
 }

@@ -1,0 +1,26 @@
+@import "styles/mixins";
+
+.checkbox {
+  @include fuzzyBorder(0, .4px, .4px, 3deg);
+
+  height: 20px;
+  width: 20px;
+  border: 1px solid black;
+  margin-right: 10px;
+
+  &.checked {
+    background: $lightGreen;
+  }
+
+  & ~ input[type=checkbox] { display: none; }
+
+  &Label {
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    font-size: 20px;
+    cursor: pointer;
+    user-select: none;
+
+  }
+}
