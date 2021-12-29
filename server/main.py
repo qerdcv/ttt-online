@@ -1,3 +1,6 @@
+import logging
+
+
 from aiohttp import web
 from src.routes import routes
 
@@ -10,6 +13,7 @@ def create_app() -> web.Application:
 
 def main():
     app = create_app()
+    logging.basicConfig(level=logging.DEBUG)
     web.run_app(host='0.0.0.0', port=8000, app=app)
 
 
