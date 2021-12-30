@@ -2,12 +2,15 @@ version: '3'
 
 services:
   app:
-    command: python3 main.py
+    command: adev runserver .
     build:
       context: .
+      target: dev
       dockerfile: Dockerfile
     ports:
-      - '4444:4444'
+      - '4444:8000'
+    volumes:
+      - .:/server
     depends_on:
       - db
 
