@@ -24,7 +24,7 @@ export const QuickGame = () => {
       <Button value="Play !" classNames={[styles.mainBtn]} onClick={onPushPopUpStack.bind(null, startMenu)}/>
       {popUpStack.length !== 0 && (
         <PopUp closeEvent={resetPopUpStack}>
-          {popUps[popUpStack.at(-1)]}
+          {popUps[popUpStack[popUpStack.length - 1]]}
         </PopUp>
       )}
     </main>

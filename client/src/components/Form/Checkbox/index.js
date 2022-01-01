@@ -1,5 +1,6 @@
 import { useState } from "react";
 import styles from "components/Form/Checkbox/checkbox.module.scss";
+import { useForm } from "react-hook-form";
 
 export const Checkbox = ({label, name, onChange}) => {
   const [isChecked, setIsChecked] = useState(false);

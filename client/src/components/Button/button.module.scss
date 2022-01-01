@@ -7,16 +7,23 @@
   padding: 10px 30px;
   background: transparent;
   border: 1px solid $black;
-  cursor: pointer;
   user-select: none;
   transition: all .1s ease-in-out;
 
-  &:hover {
-    transform: scale(.95);
+  &:disabled {
+    background: lightgray;
   }
 
-  &:active {
-    transform: scale(.9);
+  &Active {
+    &:hover {
+      transform: scale(.95);
+    }
+
+    &:active {
+      transform: scale(.9);
+    }
+
+    cursor: pointer;
   }
 
   &.fuzzy {
