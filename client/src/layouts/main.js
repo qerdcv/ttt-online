@@ -7,11 +7,12 @@ import { useState } from "react";
 
 export const MainLayout = () => {
   const [popUpStack, setPopUpStack] = useState([]);
+  const [popUpCtx, setPopUpCtx] = useState({});
 
-  const onPushPopUpStack = (popUpType) => {
-
+  const onPushPopUpStack = (type, ctx={}) => {
+    setPopUpCtx(ctx)
     setPopUpStack((prevStack) => {
-      return [...prevStack, popUpType];
+      return [...prevStack, type];
     });
   };
 
@@ -32,7 +33,8 @@ export const MainLayout = () => {
         onPushPopUpStack,
         onPopPopUpStack,
         resetPopUpStack,
-        popUpStack
+        popUpStack,
+        popUpCtx
       }}>
         <QuickGame/>
       </PopUpContext.Provider>

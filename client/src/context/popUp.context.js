@@ -3,8 +3,9 @@ import { createContext } from "react";
 
 
 export const PopUpContext = createContext({
-  onPushPopUpStack: function (popupType){},
+  onPushPopUpStack: function (type, ctx){},
   onPopPopUpStack: function (){},
   resetPopUpStack: function (){},
-  popUpStack: []
+  popUpStack: [],
+  popUpCtx: {}
 })
