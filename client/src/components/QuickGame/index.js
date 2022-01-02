@@ -1,8 +1,8 @@
 import { useContext, useMemo } from "react";
 import { Button } from "components/Button";
 import { PopUp } from "components/PopUp";
-import { StartMenu, LoginRoom, CreateRoom, Fast } from "components/QuickGame/PopUp";
-import { startMenu, loginRoom, createRoom, fast } from "components/QuickGame/constant";
+import { StartMenu, LoginRoom, CreateRoom, Fast, ConnectRoom } from "components/QuickGame/PopUp";
+import { startMenu, loginRoom, createRoom, fast, connectRoom } from "components/QuickGame/constant";
 import { PopUpContext } from "context/popUp.context";
 import styles from 'components/QuickGame/quick.module.scss';
 
@@ -14,6 +14,7 @@ export const QuickGame = () => {
       [startMenu]: <StartMenu/>,
       [createRoom]: <CreateRoom/>,
       [loginRoom]: <LoginRoom/>,
+      [connectRoom]: <ConnectRoom />,
       [fast]: <Fast />,
     };
   }, []);
