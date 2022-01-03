@@ -1,5 +1,3 @@
-import { Header } from "components/Header";
-import { Footer } from "components/Footer";
 import { QuickGame } from "components/QuickGame";
 
 import { PopUpContext } from "context/popUp.context";
@@ -27,18 +25,14 @@ export const MainLayout = () => {
   }
 
   return (
-    <>
-      <Header/>
-      <PopUpContext.Provider value={{
-        onPushPopUpStack,
-        onPopPopUpStack,
-        resetPopUpStack,
-        popUpStack,
-        popUpCtx
-      }}>
-        <QuickGame/>
-      </PopUpContext.Provider>
-      <Footer/>
-    </>
+    <PopUpContext.Provider value={{
+      onPushPopUpStack,
+      onPopPopUpStack,
+      resetPopUpStack,
+      popUpStack,
+      popUpCtx
+    }}>
+      <QuickGame/>
+    </PopUpContext.Provider>
   );
 };
