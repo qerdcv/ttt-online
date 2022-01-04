@@ -1,19 +1,29 @@
+@import "styles/colors";
+@import "styles/mixins";
+
 .header {
+  padding: 40px 0;
   height: 40px;
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   align-items: center;
   font-size: 20px;
+}
+
+.home {
+  @include fuzzyBorder(0, 0, 0, 5deg);
+  @include pressingTransform;
+
+  font-size: 30px;
+  text-decoration: none;
+  color: $black;
+  border: 1px solid $black;
 }
 
 .navbar {
   &Item {
     display: inline;
-    margin: 20px 10px;
-    color: #000;
-
-    &:hover {
-      transform: scale(0.9);
-    }
+    margin: 0 10px;
+    color: $black;
   }
 }
