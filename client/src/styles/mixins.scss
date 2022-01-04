@@ -17,3 +17,15 @@
     z-index: -1;
   }
 }
+
+@mixin pressingTransform {
+  transition: transform .2s ease-in-out;
+
+  &:hover {
+    transform: scale(.95);
+  }
+
+  &:active {
+    transform: scale(.9);
+  }
+}
