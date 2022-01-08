@@ -19,6 +19,8 @@ async def create_room(request: web.Request) -> web.Response:
         some_room.validate()
     except DataError as e:
         return web.json_response(e.to_primitive(), status=400)
+    if await db.room_is_occupied(data):
+        return web.json_response({'msg': 'room with that name already exists'}, status=409)
     await db.create_room(data)
     return web.json_response({'msg': 'OK'}, status=201)
 
