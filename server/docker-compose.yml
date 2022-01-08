@@ -1,4 +1,4 @@
-version: '3'
+version: '3.4'
 
 services:
   app:
@@ -13,10 +13,15 @@ services:
       - .:/server
     depends_on:
       - db
-
+    environment:
+      PYTHONUNBUFFERED: 1
+      MONGO_URL: mongodb://root:toor@db
+      MONGO_DATABASE: ttt
   db:
     image: mongo:latest
     restart: always
+    volumes:
+      - db:/data/db
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: toor
@@ -30,3 +35,7 @@ services:
       ME_CONFIG_MONGODB_ADMINUSERNAME: root
       ME_CONFIG_MONGODB_ADMINPASSWORD: toor
       ME_CONFIG_MONGODB_URL: mongodb://root:toor@db:27017/
+
+
+volumes:
+  db:
