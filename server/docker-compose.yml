@@ -17,6 +17,7 @@ services:
       PYTHONUNBUFFERED: 1
       MONGO_URL: mongodb://root:toor@db
       MONGO_DATABASE: ttt
+      SECRET: ${APP_SECRET}
   db:
     image: mongo:latest
     restart: always

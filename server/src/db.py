@@ -2,6 +2,8 @@ import os
 
 from motor import motor_asyncio
 
+from src.encrypt import encrypt
+from src.settings import SECRET
 
 DB_CONNECTION = None
 DATABASE = None
@@ -22,6 +24,7 @@ def db() -> motor_asyncio.AsyncIOMotorDatabase:
 
 
 async def create_room(data: dict):
+    data['password'] = encrypt(key=SECRET, msg=data['password'])
     await db().rooms.insert_one(data)
 
 
