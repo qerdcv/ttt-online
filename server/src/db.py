@@ -1,7 +1,7 @@
 import os
 
 from motor import motor_asyncio
-
+from bson import ObjectId
 
 DB_CONNECTION = None
 DATABASE = None
@@ -38,3 +38,10 @@ async def room_is_occupied(data: dict) -> bool:
     if obj is None:
         return False
     return True
+
+
+async def get_room(_id: str):
+    obj = await db().rooms.find_one({"_id": ObjectId(_id)})
+    if obj is None:
+        return None
+    return obj['game']

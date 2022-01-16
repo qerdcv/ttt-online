@@ -37,3 +37,11 @@ async def get_list_rooms(request: web.Request) -> web.Response:
             "total_pages": math.ceil(total_count / limit),
         }
     }, status=200, dumps=parse_json)
+
+
+async def get_room(request: web.Request) -> web.Response:
+    _id = request.match_info['_id']
+    game = await db.get_room(_id)
+    if game is None:
+        return web.json_response({'msg': 'Room search error'}, status=404)
+    return web.json_response({'game': game}, status=200)
