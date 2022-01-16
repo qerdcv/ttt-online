@@ -39,9 +39,9 @@ async def get_list_rooms(request: web.Request) -> web.Response:
     }, status=200, dumps=parse_json)
 
 
-async def login_room(request: web.Request) -> web.Response:
-    data = await request.json()
-    login_complete = await db.login_room(data)
-    if login_complete:
-        return web.json_response({'msg': 'Login room complete'}, status=200)
-    return web.json_response({'msg': 'Room is occupied'}, status=404)
+async def get_room(request: web.Request) -> web.Response:
+    _id = request.match_info['_id']
+    game = await db.get_room(_id)
+    if game is None:
+        return web.json_response({'msg': 'Room search error'}, status=404)
+    return web.json_response({'game': game}, status=200)

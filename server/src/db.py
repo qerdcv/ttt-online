@@ -59,45 +59,15 @@ async def get_rooms(page: int, limit: int) -> (list, int):
     return await cursor.to_list(None), await db().rooms.count_documents({})
 
 
+async def get_room(_id: str):
+    obj = await db().rooms.find_one({"_id": ObjectId(_id)})
+    if obj is None:
+        return None
+    return obj['game']
+
+
 async def room_is_occupied(data: dict) -> bool:
     obj = await db().rooms.find_one({"room_name": data["room_name"]})
     if obj is None:
         return False
     return True
-
-
-#  TODO: come up with another way to log in a user
-async def login_room(data: dict):
-    obj = await get_free_place(data)
-    if obj is None:
-        return False
-    else:
-        if len(obj) == 2:
-            num_player = random.randint(1, 2)
-        else:
-            num_player = list(obj)[0][-1]
-        await update_free_place(data, num_player)
-        return True
-
-
-async def update_free_place(data: dict, pos_player: int):
-    await db().rooms.update_one(
-        {"_id": ObjectId(data['room_id'])},
-        {"$set":
-            {
-                f"game.player{pos_player}.username": data['user_name']
-            }
-        }
-    )
-
-
-async def get_free_place(data: dict) -> dict:
-    obj = await db().rooms.find_one(
-        {"_id": ObjectId(data['room_id'])},
-        {
-            "game.player1.username": 1,
-            "game.player2.username": 1,
-        }
-    )
-    result = {value: obj['game'][value] for value in obj['game'] if obj['game'][value]['username'] is None}
-    return result if len(result) > 0 else None
