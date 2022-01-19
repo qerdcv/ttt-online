@@ -41,7 +41,7 @@ async def get_list_rooms(request: web.Request) -> web.Response:
 
 async def get_room(request: web.Request) -> web.Response:
     _id = request.match_info['_id']
-    game = await db.get_room(_id)
-    if game is None:
-        return web.json_response({'msg': 'Room search error'}, status=404)
-    return web.json_response({'game': game}, status=200)
+    room_info = await db.get_room(_id)
+    if room_info is None:
+        return web.json_response({'msg': 'room not found'}, status=404)
+    return web.json_response(room_info, dumps=parse_json)

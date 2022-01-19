@@ -41,7 +41,8 @@ async def room_is_occupied(data: dict) -> bool:
 
 
 async def get_room(_id: str):
-    obj = await db().rooms.find_one({"_id": ObjectId(_id)})
-    if obj is None:
+    room = await db().rooms.find_one({"_id": ObjectId(_id)})
+    if room is None:
         return None
-    return obj['game']
+    room.pop('password', None)
+    return room
