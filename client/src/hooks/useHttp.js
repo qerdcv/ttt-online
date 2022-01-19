@@ -10,7 +10,7 @@ export const useHttp = () => {
     setError({})
 
     try {
-      data = await callback(JSON.stringify(params))
+      data = (await callback(JSON.stringify(params))).data
       setLoading(false)
     } catch (e) {
       setLoading(false)

@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import { Button } from "components/Button";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Checkbox } from "components/Form";
 import styles from "components/QuickGame/PopUp/CreateRoom/createRoom.module.scss";
 import "styles/common.scss";
@@ -13,10 +13,13 @@ export const CreateRoom = () => {
   const {loading, error, request} = useHttp()
   const [isPrivate, setIsPrivate] = useState(false);
 
+  useEffect(() => {
+    setValue("is_private", isPrivate);
+  }, [setValue, isPrivate]);
+
   const onCheck = (e) => {
     setIsPrivate(!isPrivate)
-    setValue("is_private", !isPrivate);
-    resetField("room_password")
+    resetField("password")
   }
 
   const onSubmit = async (data) => {
@@ -53,7 +56,7 @@ export const CreateRoom = () => {
         <Checkbox label="Is Private?" name="is_private" onChange={onCheck}/>
         <div className={formStyles.formControl}>
           <input
-            {...register('room_password', {
+            {...register('password', {
               required: {
                 value: isPrivate,
                 message: "Required if is private flag is ON"
@@ -61,7 +64,7 @@ export const CreateRoom = () => {
             })}
             type="password"
             placeholder="Room Password"
-            name="room_password"
+            name="password"
             className={!isPrivate ? "hidden" : null}
           />
           {errors.room_password && (
