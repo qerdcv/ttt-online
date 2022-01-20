@@ -21,8 +21,8 @@ async def create_room(request: web.Request) -> web.Response:
         return web.json_response(e.to_primitive(), status=400)
     if await db.room_is_occupied(data):
         return web.json_response({'msg': 'room with that name already exists'}, status=409)
-    await db.create_room(data)
-    return web.json_response({'msg': 'OK'}, status=201)
+    room_id = await db.create_room(data)
+    return web.json_response({'room_id': room_id}, status=201, dumps=parse_json)
 
 
 async def get_list_rooms(request: web.Request) -> web.Response:

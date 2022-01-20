@@ -1,7 +1,7 @@
 import os
 
 from motor import motor_asyncio
-
+from bson import ObjectId
 
 DB_CONNECTION = None
 DATABASE = None
@@ -22,7 +22,39 @@ def db() -> motor_asyncio.AsyncIOMotorDatabase:
 
 
 async def create_room(data: dict):
-    await db().rooms.insert_one(data)
+    room = await db().rooms.insert_one(data)
+    game_id = await create_game(room.inserted_id)
+    await db().rooms.update_one(
+        {'_id': room.inserted_id},
+        {"$set":
+            {'game_id': game_id}
+        }
+    )
+    return room.inserted_id
+
+
+async def create_game(room_id: ObjectId):
+    data = {
+        'room_id': room_id,
+        'player1': {
+            'username': None,
+            'mark': 'X'
+        },
+        'player2': {
+            'username': None,
+            'mark': '0'
+        },
+        'field': [
+            [' ', ' ', ' '],
+            [' ', ' ', ' '],
+            [' ', ' ', ' ']
+        ],
+        'turn': 'player1',
+        'winner': None,
+        'game_state': 'pending',
+    }
+    game = await db().games.insert_one(data)
+    return game.inserted_id
 
 
 async def get_rooms(page: int, limit: int) -> (list, int):
