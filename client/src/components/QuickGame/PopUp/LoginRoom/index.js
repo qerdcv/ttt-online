@@ -5,31 +5,15 @@ import { Button } from "components/Button";
 import { PopUpContext } from "context/popUp.context";
 import styles from "components/QuickGame/PopUp/LoginRoom/loginRoom.module.scss";
 import { connectRoom } from "components/QuickGame/constant";
-import { useHttp } from "../../../../hooks/useHttp";
-import { Room } from "../../../../api/room";
-// import { Room } from "api/room";
-
-const mockedRooms = [
-  {_id: "1", room_name: "Room Name 1", is_private: false},
-  {_id: "2", room_name: "Room Name 2", is_private: true},
-  {_id: "3", room_name: "Room Name 3", is_private: true},
-  {_id: "4", room_name: "Room Name 4", is_private: false},
-  {_id: "5", room_name: "Room Name 5", is_private: false},
-  {_id: "6", room_name: "Room Name 6", is_private: false},
-  {_id: "7", room_name: "Room Name 7", is_private: true},
-  {_id: "8", room_name: "Room Name 8", is_private: true},
-  {_id: "9", room_name: "Room Name 9", is_private: false},
-  {_id: "10", room_name: "Room Name 10 very very very very very long name", is_private: true},
-]
+import { useHttp } from "hooks/useHttp";
+import { Room } from "api/room";
 
 export const LoginRoom = () => {
-  const {request, error, loading} = useHttp();
+  const {request, loading} = useHttp();
   const { onPushPopUpStack } = useContext(PopUpContext)
   const [rooms, setRooms] = useState([]);
 
   useEffect(async () => {
-    // TODO: add http request
-    // Room.get()
     const data = await request(Room.get)
     setRooms(data['rooms']);
   }, [])
