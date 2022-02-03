@@ -1,40 +1,71 @@
-import os
+import logging
 
-from motor import motor_asyncio
+import asyncpg
+from aiohttp import web
+from asyncpg.pool import Pool
 
-
-DB_CONNECTION = None
-DATABASE = None
-
-
-def db_connection():
-    global DB_CONNECTION
-    if DB_CONNECTION is None:
-        DB_CONNECTION = motor_asyncio.AsyncIOMotorClient(os.environ['MONGO_URL'])
-    return DB_CONNECTION
+from config import BASE_DIR
 
 
-def db() -> motor_asyncio.AsyncIOMotorDatabase:
-    global DATABASE
-    if DATABASE is None:
-        DATABASE = db_connection()[os.environ['MONGO_DATABASE']]
-    return DATABASE
+log = logging.getLogger(__name__)
 
 
-async def create_room(data: dict):
-    await db().rooms.insert_one(data)
+def get_query(query_name: str) -> str:
+    try:
+        with open(BASE_DIR / f'queries/{query_name}.sql', 'r') as file:
+            return file.read()
+    except FileNotFoundError:
+        log.error(f'Query {query_name} not found')
+        return ''
 
 
-async def get_rooms(page: int, limit: int) -> (list, int):
-    cursor = db().rooms.aggregate([
-        {"$limit": limit},
-        {"$skip": (page - 1) * limit},
-    ])
-    return await cursor.to_list(None), await db().rooms.count_documents({})
+async def create_db(app: web.Application):
+    log.info('create_db')
+    pool: Pool = app['pool']
+    async with pool.acquire() as con:
+        await con.execute(get_query('init'))
 
 
-async def room_is_occupied(data: dict) -> bool:
-    obj = await db().rooms.find_one({"room_name": data["room_name"]})
-    if obj is None:
-        return False
-    return True
+async def create_room(pool: Pool, data: dict) -> int:
+    async with pool.acquire() as con:
+        room_id = await con.fetchval(
+            get_query('create_room'),
+            data['room_name'], data['is_private']
+        )
+    if 'password' in data.keys():
+        await update_password(pool, room_id, data['password'])
+    return room_id
+
+
+async def get_room(pool: Pool, data: dict):
+    async with pool.acquire() as con:
+        room = await con.fetchrow(
+            get_query('get_room'),
+            data["room_name"]
+        )
+    return room
+
+
+async def get_total_page(pool: Pool):
+    async with pool.acquire() as con:
+        total_page = await con.fetchval(get_query('get_total_page'))
+    return total_page
+
+
+async def get_room_list(pool: Pool, page: int, limit: int) -> (list, int):
+    async with pool.acquire() as con:
+        rows = await con.fetch(
+            get_query('get_room_list'),
+            (page - 1) * limit, limit
+        )
+    result = [dict(row) for row in rows]
+    total_page = await get_total_page(pool)
+    return result, total_page
+
+
+async def update_password(pool: Pool, room_id: int, pas: str):
+    async with pool.acquire() as con:
+        await con.execute(
+            get_query('update_password'),
+            pas, room_id
+        )
