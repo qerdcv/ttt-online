@@ -15,27 +15,22 @@ services:
       - db
     environment:
       PYTHONUNBUFFERED: 1
-      MONGO_URL: mongodb://root:toor@db
-      MONGO_DATABASE: ttt
+      DB_HOST: db
+      DB_USERNAME: ${APP_DB_USERNAME}
+      DB_PASSWORD: ${APP_DB_PASSWORD}
+      DB_DATABASE: ${APP_DB_DATABASE}
   db:
-    image: mongo:latest
+    container_name: ttt_db
+    image: postgres:latest
     restart: always
+    environment:
+      POSTGRES_USER: ${APP_DB_USERNAME}
+      POSTGRES_PASSWORD: ${APP_DB_PASSWORD}
+      POSTGRES_DB: ${APP_DB_DATABASE}
     volumes:
-      - db:/data/db
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: toor
-
-  mongo-express:
-    image: mongo-express
-    restart: always
+      - db:/var/lib/postgresql/data
     ports:
-      - '8081:8081'
-    environment:
-      ME_CONFIG_MONGODB_ADMINUSERNAME: root
-      ME_CONFIG_MONGODB_ADMINPASSWORD: toor
-      ME_CONFIG_MONGODB_URL: mongodb://root:toor@db:27017/
-
+      - "5432:5432"
 
 volumes:
   db:

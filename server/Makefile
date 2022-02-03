@@ -2,6 +2,7 @@ COMPOSE ?= docker-compose -f docker-compose.yml
 
 run: build
 	$(COMPOSE) up -d
+	echo http://localhost:4444
 
 build:
 	$(COMPOSE) build
