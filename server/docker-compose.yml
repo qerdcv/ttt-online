@@ -17,7 +17,6 @@ services:
       PYTHONUNBUFFERED: 1
       DB_URI: postgresql://${APP_DB_USERNAME}:${APP_DB_PASSWORD}@db/${APP_DB_DATABASE}
   db:
-    container_name: ttt_db
     image: postgres:latest
     restart: always
     environment:
