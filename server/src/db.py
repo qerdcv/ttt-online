@@ -3,11 +3,19 @@ import logging
 import asyncpg
 from aiohttp import web
 from asyncpg.pool import Pool
+from dataclasses import dataclass
 
 from config import BASE_DIR
 
 
 log = logging.getLogger(__name__)
+
+
+@dataclass
+class Room:
+    room_name: str
+    is_private: bool
+    password: str = ''
 
 
 def get_query(query_name: str) -> str:
@@ -22,50 +30,44 @@ def get_query(query_name: str) -> str:
 async def create_db(app: web.Application):
     log.info('create_db')
     pool: Pool = app['pool']
-    async with pool.acquire() as con:
-        await con.execute(get_query('init'))
+    async with pool.acquire() as conn:
+        await conn.execute(get_query('init'))
 
 
 async def create_room(pool: Pool, data: dict) -> int:
-    async with pool.acquire() as con:
-        room_id = await con.fetchval(
-            get_query('create_room'),
-            data['room_name'], data['is_private']
-        )
+    room = Room(room_name=data['room_name'], is_private=data['is_private'])
     if 'password' in data.keys():
-        await update_password(pool, room_id, data['password'])
+        room.password = data['password']
+    async with pool.acquire() as conn:
+        room_id = await conn.fetchval(
+            get_query('create_room'),
+            room.room_name, room.is_private, room.password
+        )
     return room_id
 
 
-async def get_room(pool: Pool, data: dict):
-    async with pool.acquire() as con:
-        room = await con.fetchrow(
-            get_query('get_room'),
-            data["room_name"]
-        )
-    return room
-
-
-async def get_total_page(pool: Pool):
-    async with pool.acquire() as con:
-        total_page = await con.fetchval(get_query('get_total_page'))
-    return total_page
-
-
-async def get_room_list(pool: Pool, page: int, limit: int) -> (list, int):
-    async with pool.acquire() as con:
-        rows = await con.fetch(
+async def get_room_list(pool: Pool, page: int, limit: int) -> list:
+    async with pool.acquire() as conn:
+        rows = await conn.fetch(
             get_query('get_room_list'),
             (page - 1) * limit, limit
         )
     result = [dict(row) for row in rows]
-    total_page = await get_total_page(pool)
-    return result, total_page
+    return result
 
 
-async def update_password(pool: Pool, room_id: int, pas: str):
+async def get_total_rooms(pool: Pool) -> int:
     async with pool.acquire() as con:
-        await con.execute(
-            get_query('update_password'),
-            pas, room_id
+        total_page = await con.fetchval(get_query('get_total_rooms'))
+    return total_page
+
+
+async def is_room_exist(pool: Pool, data: dict) -> bool:
+    async with pool.acquire() as conn:
+        room = await conn.fetchrow(
+            get_query('get_room'),
+            data["room_name"]
         )
+    if room is not None:
+        return True
+    return False

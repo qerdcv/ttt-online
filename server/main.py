@@ -12,12 +12,10 @@ from src.db import create_db
 def create_app() -> web.Application:
     app = web.Application()
     loop = asyncio.get_event_loop()
+    # TODO: Solve problem "RuntimeError: This event loop is already running" without nest_asyncio library
     nest_asyncio.apply(loop)
     app['pool'] = loop.run_until_complete(asyncpg.create_pool(
-        user=os.environ['DB_USERNAME'],
-        password=os.environ['DB_PASSWORD'],
-        database=os.environ['DB_DATABASE'],
-        host=os.environ['DB_HOST']
+        os.environ['DB_URI']
     ))
     app.add_routes(routes)
     app.on_startup.append(create_db)
