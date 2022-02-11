@@ -1,3 +1,3 @@
 SELECT id, name, is_private
 FROM rooms
-ORDER BY count LIMIT $2 OFFSET $1;
+ORDER BY id LIMIT $2 OFFSET $1;

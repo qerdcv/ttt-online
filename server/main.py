@@ -9,7 +9,8 @@ from src.db import create_db
 
 async def init_pool(app):
     app['pool'] = await asyncpg.create_pool(
-        os.environ['DB_URI']
+        os.environ['DB_URI'],
+        host=os.environ['DB_HOST']
     )
 
 
