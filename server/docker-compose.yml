@@ -15,8 +15,7 @@ services:
       - db
     environment:
       PYTHONUNBUFFERED: 1
-      DB_URI: postgresql://${APP_DB_USERNAME}:${APP_DB_PASSWORD}@db/${APP_DB_DATABASE}
-      DB_HOST: db
+      DB_URI: postgres://${APP_DB_USERNAME}:${APP_DB_PASSWORD}@db:5432/${APP_DB_DATABASE}
   db:
     image: postgres:latest
     restart: always

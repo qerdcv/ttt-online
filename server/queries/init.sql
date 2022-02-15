@@ -1,7 +1,6 @@
 CREATE TABLE IF NOT EXISTS rooms(
     id SERIAL,
-    name VARCHAR(27),
+    name VARCHAR(27) UNIQUE,
     is_private BOOLEAN,
-    password VARCHAR(27) DEFAULT '',
-    game_id INTEGER
+    password VARCHAR(27) DEFAULT ''
 );
