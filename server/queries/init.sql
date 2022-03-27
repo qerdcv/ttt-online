@@ -18,6 +18,5 @@ CREATE TABLE IF NOT EXISTS games(
     step_count INTEGER DEFAULT 0,
     winner_id INTEGER REFERENCES users(id),
     field json DEFAULT '[["", "", ""], ["", "", ""], ["", "", ""]]',
-    current_state STATE DEFAULT 'pending',
-    next_state STATE DEFAULT 'in_game'
+    current_state STATE DEFAULT 'pending'
 );

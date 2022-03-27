@@ -1,5 +1,8 @@
+import random
 import typing as t
-from dataclasses import dataclass, asdict
+from dataclasses import dataclass
+
+from src.middlewares import User
 
 
 @dataclass
@@ -12,4 +15,10 @@ class Game:
     winner_id: t.Optional[int]
     field: t.Union[str, list]
     current_state: str
-    next_state: str
+
+    def set_opponent(self, opponent: User):
+        self.opponent_id = opponent.id
+        self.current_player_id = random.choice(
+            [self.owner_id, self.opponent_id]
+        )
+        self.current_state = 'in_game'

@@ -1,7 +1,7 @@
 import json
 import logging
 import typing as t
-from dataclasses import dataclass, asdict
+from dataclasses import dataclass, astuple
 
 from aiohttp import web
 from asyncpg.pool import Pool
@@ -70,3 +70,30 @@ async def get_user(pool: Pool, username: str) -> t.Optional[UserInfo]:
     if user is not None:
         return UserInfo(*user)
     return None
+
+
+async def get_game(pool: Pool, id: int) -> t.Optional[Game]:
+    async with pool.acquire() as conn:
+        game = await conn.fetchrow(
+            get_query('get_game'),
+            id
+        )
+    if game is not None:
+        game = Game(*game)
+        game.field = json.loads(game.field)
+    return game
+
+
+async def update_game(pool: Pool, game: Game):
+    async with pool.acquire() as conn:
+        await conn.execute(
+            get_query('update_game'),
+            game.id,
+            game.owner_id,
+            game.opponent_id,
+            game.current_player_id,
+            game.step_count,
+            game.winner_id,
+            json.dumps(game.field),
+            game.current_state
+        )

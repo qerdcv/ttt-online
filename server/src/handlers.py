@@ -24,9 +24,8 @@ async def registration(request: web.Request) -> web.Response:
         user.validate()
     except DataError as e:
         return web.json_response(e.to_primitive(), status=400)
-    pool = request.app['pool']
     try:
-        user = await db.create_user(pool, user)
+        await db.create_user(request.app['pool'], user)
     except UniqueViolationError:
         return web.json_response({'message': 'user with that name already exists'}, status=409)
     response = web.json_response({'message': 'OK'}, status=201)
@@ -94,7 +93,13 @@ async def create_game(request: web.Request) -> web.Response:
 
 @auth_required
 async def login_game(request: web.Request) -> web.Response:
-    pass
+    data = await request.json()
+    game = await db.get_game(request.app['pool'], data['id'])
+    if game is None:
+        return web.json_response({'message': 'game not found'}, status=404)
+    game.set_opponent(request.user)
+    await db.update_game(request.app['pool'], game)
+    return web.json_response(asdict(game), status=200)
 
 
 async def get_game(request: web.Request) -> web.Response:
