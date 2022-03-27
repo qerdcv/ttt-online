@@ -1,30 +1,37 @@
+import json
 import logging
+import typing as t
+from dataclasses import dataclass, asdict
 
-import asyncpg
 from aiohttp import web
 from asyncpg.pool import Pool
-from dataclasses import dataclass
 
 from config import BASE_DIR
+from src.encrypt import encrypt_password, decrypt_password
+from src.models.game import Game
+from src.models.user import User as ValidUser
+from src.middlewares import User
 
 
 log = logging.getLogger(__name__)
 
 
 @dataclass
-class Room:
-    room_name: str
-    is_private: bool
-    password: str = ''
+class UserInfo:
+    id: str
+    username: str
+    password: str
+
+    def is_password_same(self, password):
+        return decrypt_password(self.password) == password
 
 
-def get_query(query_name: str) -> str:
+def get_query(query_name: str) -> t.Optional[str]:
     try:
         with open(BASE_DIR / f'queries/{query_name}.sql', 'r') as file:
             return file.read()
     except FileNotFoundError:
         log.error(f'Query {query_name} not found')
-        return ''
 
 
 async def create_db(app: web.Application):
@@ -34,40 +41,32 @@ async def create_db(app: web.Application):
         await conn.execute(get_query('init'))
 
 
-async def create_room(pool: Pool, data: dict) -> int:
-    room = Room(room_name=data['room_name'], is_private=data['is_private'])
-    if 'password' in data.keys():
-        room.password = data['password']
+async def create_user(pool: Pool, user: ValidUser):
+    user.password = encrypt_password(user.password)
     async with pool.acquire() as conn:
-        room_id = await conn.fetchval(
-            get_query('create_room'),
-            room.room_name, room.is_private, room.password
+        user.id = await conn.fetchval(
+            get_query('create_user'),
+            user.username, user.password
         )
-    return room_id
 
 
-async def get_room_list(pool: Pool, page: int, limit: int) -> list:
+async def create_game(pool: Pool, user: User) -> Game:
     async with pool.acquire() as conn:
-        rows = await conn.fetch(
-            get_query('get_room_list'),
-            (page - 1) * limit, limit
+        game = await conn.fetchrow(
+            get_query('create_game'),
+            user.id
         )
-    result = [dict(row) for row in rows]
-    return result
+    game = Game(*game)
+    game.field = json.loads(game.field)
+    return game
 
 
-async def get_total_rooms(pool: Pool) -> int:
-    async with pool.acquire() as con:
-        total_page = await con.fetchval(get_query('get_total_rooms'))
-    return total_page
-
-
-async def is_room_exist(pool: Pool, data: dict) -> bool:
+async def get_user(pool: Pool, username: str) -> t.Optional[UserInfo]:
     async with pool.acquire() as conn:
-        room = await conn.fetchrow(
-            get_query('get_room'),
-            data["room_name"]
+        user = await conn.fetchrow(
+            get_query('get_user'),
+            username
         )
-    if room is not None:
-        return True
-    return False
+    if user is not None:
+        return UserInfo(*user)
+    return None
