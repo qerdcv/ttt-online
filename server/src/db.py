@@ -1,29 +1,16 @@
 import json
 import logging
 import typing as t
-from dataclasses import dataclass
 
 from aiohttp import web
 from asyncpg.pool import Pool
-
 from config import BASE_DIR
-from src.encrypt import encrypt_password, decrypt_password
+from src.encrypt import encrypt
 from src.models.game import Game
-from src.models.user import User as ValidUser
-from src.middlewares import User
+from src.models.user import User
 
 
 log = logging.getLogger(__name__)
-
-
-@dataclass
-class UserInfo:
-    id: str
-    username: str
-    password: str
-
-    def is_password_same(self, password):
-        return decrypt_password(self.password) == password
 
 
 def get_query(query_name: str) -> t.Optional[str]:
@@ -41,12 +28,11 @@ async def create_db(app: web.Application):
         await conn.execute(get_query('init'))
 
 
-async def create_user(pool: Pool, user: ValidUser):
-    user.password = encrypt_password(user.password)
+async def create_user(pool: Pool, user: User):
     async with pool.acquire() as conn:
-        user.id = await conn.fetchval(
+        await conn.execute(
             get_query('create_user'),
-            user.username, user.password
+            user.username, encrypt(user.password)
         )
 
 
@@ -61,22 +47,21 @@ async def create_game(pool: Pool, user: User) -> Game:
     return game
 
 
-async def get_user(pool: Pool, username: str) -> t.Optional[UserInfo]:
+async def get_user(pool: Pool, user: User) -> t.Optional[User]:
     async with pool.acquire() as conn:
         user = await conn.fetchrow(
             get_query('get_user'),
-            username
+            user.username
         )
     if user is not None:
-        return UserInfo(*user)
-    return None
+        return User(dict(user))
 
 
-async def get_game(pool: Pool, id: int) -> t.Optional[Game]:
+async def get_game(pool: Pool, gID: int) -> t.Optional[Game]:
     async with pool.acquire() as conn:
         game = await conn.fetchrow(
             get_query('get_game'),
-            id
+            gID
         )
     if game is not None:
         game = Game(*game)
@@ -84,14 +69,16 @@ async def get_game(pool: Pool, id: int) -> t.Optional[Game]:
     return game
 
 
-async def get_game_list(pool: Pool, page: int, limit: int) -> list:
+async def get_game_list(pool: Pool, page: int, limit: int) -> t.List[Game]:
     async with pool.acquire() as conn:
         rows = await conn.fetch(
             get_query('get_game_list'),
             (page - 1) * limit, limit
         )
-    result = list(map(dict, rows))
-    return result
+    games = [Game(*row) for row in rows]
+    for game in games:
+        game.field = json.loads(game.field)
+    return games
 
 
 async def get_total_games(pool: Pool) -> int:

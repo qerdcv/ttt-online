@@ -5,7 +5,7 @@ from aiohttp import web
 
 from src.routes import routes
 from src.db import create_db
-from src.middlewares import authorized
+from src.middlewares import auth
 
 
 async def init_pool(app):
@@ -15,10 +15,9 @@ async def init_pool(app):
 
 
 def create_app() -> web.Application:
-    app = web.Application(middlewares=[authorized])
+    app = web.Application(middlewares=[auth])
     app.add_routes(routes)
-    app.on_startup.append(init_pool)
-    app.on_startup.append(create_db)
+    app.on_startup.extend([init_pool, create_db])
     return app
 
 

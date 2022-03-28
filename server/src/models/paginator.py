@@ -1,20 +1,26 @@
-import json
 import math
-import typing as t
-from dataclasses import dataclass
 
 
-@dataclass
 class Paginator:
-    page: int = 1
-    limit: int = 10
+    page = 1
+    limit = 10
 
-    def create_paginator(self, page: t.Optional[str], limit: t.Optional[str]):
-        if page is not None:
-            self.page = math.floor(json.loads(page))
-        if limit is not None:
-            limit = math.floor(json.loads(limit))
+    def __init__(self, total_count: int, page: str, limit: str):
+        if page.isnumeric():
+            page = int(page)
+            if page > 1:
+                self.page = page
+        if limit.isnumeric():
+            limit = int(limit)
             if limit > 100:
                 self.limit = 100
-            elif limit > 0:
+            elif limit > 1:
                 self.limit = limit
+        self.count_games = math.ceil(total_count / self.limit)
+
+    def to_json(self) -> dict:
+        return {
+                'page': self.page,
+                'limit': self.limit,
+                'total_games': self.count_games,
+            }

@@ -7,15 +7,12 @@ from src.settings import SECRET
 FERNET = Fernet(SECRET)
 
 
-def encrypt_password(msg: str) -> str:
-    enc_message = FERNET.encrypt(msg.encode())
-    return enc_message.decode('utf-8')
+def encrypt(message: str) -> str:
+    return FERNET.encrypt(message.encode()).decode('utf-8')
 
 
-def decrypt_password(msg: str) -> str:
-    msg = msg.encode('utf-8')
-    dec_message = FERNET.decrypt(msg).decode()
-    return dec_message
+def decrypt(message: str) -> str:
+    return FERNET.decrypt(message.encode('utf-8')).decode()
 
 
 def encrypt_jwt(**kwargs) -> str:
@@ -24,3 +21,7 @@ def encrypt_jwt(**kwargs) -> str:
 
 def decode_jwt(jwt_token: str) -> dict:
     return jwt.decode(jwt_token, SECRET, algorithms='HS256')
+
+
+def is_same_messages(hash_message: str, message: str) -> bool:
+    return decrypt(hash_message) == message

@@ -1,3 +1,3 @@
-SELECT id, current_state
+SELECT *
 FROM games
 ORDER BY id LIMIT $2 OFFSET $1;
