@@ -1,5 +1,4 @@
 aiohttp==3.8.1
-motor==2.5.1
 schematics==2.1.1
 asyncpg==0.25.0
 PyJWT==2.3.0

@@ -29,17 +29,16 @@ async def registration(request: web.Request) -> web.Response:
     except UniqueViolationError:
         return web.json_response({'message': 'user with that name already exists'}, status=409)
     response = web.json_response({'message': 'OK'}, status=201)
-    encoded_jwt = encrypt_jwt(id=user.id, user_name=user.username)
     if remember:
         response.set_cookie(
             name='token',
-            value=encoded_jwt,
+            value=encrypt_jwt(id=user.id, user_name=user.username),
             httponly=True
         )
     else:
         response.set_cookie(
             name='token',
-            value=encoded_jwt,
+            value=encrypt_jwt(id=user.id, user_name=user.username),
             httponly=True,
             max_age=3600 * 24 * 7
         )
@@ -54,24 +53,22 @@ async def login(request: web.Request) -> web.Response:
         user.validate()
     except DataError as e:
         return web.json_response(e.to_primitive(), status=400)
-    pool = request.app['pool']
     password = user.password
-    user = await db.get_user(pool, user.username)
+    user = await db.get_user(request.app['pool'], user.username)
     if user is None:
         return web.json_response({'message': "user don't exists"}, status=404)
     if user.is_password_same(password):
         response = web.json_response({'message': 'OK'}, status=200)
-        encoded_jwt = encrypt_jwt(id=user.id, user_name=user.username)
         if remember:
             response.set_cookie(
                 name='token',
-                value=encoded_jwt,
+                value=encrypt_jwt(id=user.id, user_name=user.username),
                 httponly=True
             )
         else:
             response.set_cookie(
                 name='token',
-                value=encoded_jwt,
+                value=encrypt_jwt(id=user.id, user_name=user.username),
                 httponly=True,
                 max_age=3600 * 24 * 7
             )
@@ -103,32 +100,24 @@ async def login_game(request: web.Request) -> web.Response:
 
 
 async def get_game(request: web.Request) -> web.Response:
-    pass
+    game = await db.get_game(request.app['pool'], int(request.match_info['num']))
+    if game is None:
+        return web.json_response({'message': 'game not found'}, status=404)
+    return web.json_response(asdict(game), status=200)
 
 
 async def get_games(request: web.Request) -> web.Response:
-    pass
-
-
-async def get_list_rooms(request: web.Request) -> web.Response:
-    pool = request.app['pool']
     paginator = Paginator()
-    try:
-        page = int(request.query.get('page'))
-        limit = int(request.query.get('limit'))
-        paginator.page, paginator.limit = page, limit
-        paginator.validate()
-    except (TypeError, ValueError):
-        page, limit = paginator.page, paginator.limit
-    except DataError:
-        page, limit = paginator.page, 100
-    rooms = await db.get_room_list(pool, page, limit)
-    total_rooms = await db.get_total_rooms(pool)
+    paginator.create_paginator(
+        request.query.get('page'), request.query.get('limit')
+    )
+    rooms = await db.get_game_list(request.app['pool'], paginator.page, paginator.limit)
+    total_rooms = await db.get_total_games(request.app['pool'])
     return web.json_response({
         "rooms": rooms,
         "paginator": {
-            "page": page,
-            "limit": limit,
-            "total_pages": math.ceil(total_rooms / limit),
+            "page": paginator.page,
+            "limit": paginator.limit,
+            "total_pages": math.ceil(total_rooms / paginator.limit),
         }
     }, status=200)

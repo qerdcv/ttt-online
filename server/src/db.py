@@ -1,7 +1,7 @@
 import json
 import logging
 import typing as t
-from dataclasses import dataclass, astuple
+from dataclasses import dataclass
 
 from aiohttp import web
 from asyncpg.pool import Pool
@@ -82,6 +82,21 @@ async def get_game(pool: Pool, id: int) -> t.Optional[Game]:
         game = Game(*game)
         game.field = json.loads(game.field)
     return game
+
+
+async def get_game_list(pool: Pool, page: int, limit: int) -> list:
+    async with pool.acquire() as conn:
+        rows = await conn.fetch(
+            get_query('get_game_list'),
+            (page - 1) * limit, limit
+        )
+    result = list(map(dict, rows))
+    return result
+
+
+async def get_total_games(pool: Pool) -> int:
+    async with pool.acquire() as conn:
+        return await conn.fetchval(get_query('get_total_games'))
 
 
 async def update_game(pool: Pool, game: Game):

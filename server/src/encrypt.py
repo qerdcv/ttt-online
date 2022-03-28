@@ -19,8 +19,8 @@ def decrypt_password(msg: str) -> str:
 
 
 def encrypt_jwt(**kwargs) -> str:
-    return jwt.encode(kwargs, 'some_key', algorithm='HS256')
+    return jwt.encode(kwargs, SECRET, algorithm='HS256')
 
 
 def decode_jwt(jwt_token: str) -> dict:
-    return jwt.decode(jwt_token, 'some_key', algorithms='HS256')
+    return jwt.decode(jwt_token, SECRET, algorithms='HS256')
