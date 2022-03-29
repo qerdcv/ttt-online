@@ -1,40 +1,101 @@
-import os
+import json
+import logging
+import typing as t
 
-from motor import motor_asyncio
-
-
-DB_CONNECTION = None
-DATABASE = None
-
-
-def db_connection():
-    global DB_CONNECTION
-    if DB_CONNECTION is None:
-        DB_CONNECTION = motor_asyncio.AsyncIOMotorClient(os.environ['MONGO_URL'])
-    return DB_CONNECTION
+from aiohttp import web
+from asyncpg.pool import Pool
+from config import BASE_DIR
+from src.encrypt import encrypt
+from src.models.game import Game
+from src.models.user import User
 
 
-def db() -> motor_asyncio.AsyncIOMotorDatabase:
-    global DATABASE
-    if DATABASE is None:
-        DATABASE = db_connection()[os.environ['MONGO_DATABASE']]
-    return DATABASE
+log = logging.getLogger(__name__)
 
 
-async def create_room(data: dict):
-    await db().rooms.insert_one(data)
+def get_query(query_name: str) -> t.Optional[str]:
+    try:
+        with open(BASE_DIR / f'queries/{query_name}.sql', 'r') as file:
+            return file.read()
+    except FileNotFoundError:
+        log.error(f'Query {query_name} not found')
 
 
-async def get_rooms(page: int, limit: int) -> (list, int):
-    cursor = db().rooms.aggregate([
-        {"$limit": limit},
-        {"$skip": (page - 1) * limit},
-    ])
-    return await cursor.to_list(None), await db().rooms.count_documents({})
+async def create_db(app: web.Application):
+    log.info('create_db')
+    pool: Pool = app['pool']
+    async with pool.acquire() as conn:
+        await conn.execute(get_query('init'))
 
 
-async def room_is_occupied(data: dict) -> bool:
-    obj = await db().rooms.find_one({"room_name": data["room_name"]})
-    if obj is None:
-        return False
-    return True
+async def create_user(pool: Pool, user: User):
+    async with pool.acquire() as conn:
+        await conn.execute(
+            get_query('create_user'),
+            user.username, encrypt(user.password)
+        )
+
+
+async def create_game(pool: Pool, user: User) -> Game:
+    async with pool.acquire() as conn:
+        game = await conn.fetchrow(
+            get_query('create_game'),
+            user.id
+        )
+    game = Game(*game)
+    game.field = json.loads(game.field)
+    return game
+
+
+async def get_user(pool: Pool, user: User) -> t.Optional[User]:
+    async with pool.acquire() as conn:
+        user = await conn.fetchrow(
+            get_query('get_user'),
+            user.username
+        )
+    if user is not None:
+        return User(dict(user))
+
+
+async def get_game(pool: Pool, gID: int) -> t.Optional[Game]:
+    async with pool.acquire() as conn:
+        game = await conn.fetchrow(
+            get_query('get_game'),
+            gID
+        )
+    if game is not None:
+        game = Game(*game)
+        game.field = json.loads(game.field)
+    return game
+
+
+async def get_game_list(pool: Pool, page: int, limit: int) -> t.List[Game]:
+    async with pool.acquire() as conn:
+        rows = await conn.fetch(
+            get_query('get_game_list'),
+            (page - 1) * limit, limit
+        )
+    games = [Game(*row) for row in rows]
+    for game in games:
+        game.field = json.loads(game.field)
+    return games
+
+
+async def get_total_games(pool: Pool) -> int:
+    async with pool.acquire() as conn:
+        return await conn.fetchval(get_query('get_total_games'))
+
+
+async def update_game(pool: Pool, game: Game):
+    async with pool.acquire() as conn:
+        await conn.execute(
+            get_query('update_game'),
+            game.id,
+            game.owner_id,
+            game.opponent_id,
+            game.current_player_id,
+            game.step_count,
+            game.winner_id,
+            json.dumps(game.field),
+            game.current_state
+        )
