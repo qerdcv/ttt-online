@@ -1,5 +1,13 @@
 # Server part of TTT-online
 
-## Test API
-* docker exec -it server_app_1 bash
-* python -m pytest test/
+## TESTS
+
+### Integration
+
+#### Requirements
+* Docker
+* docker-compose
+* Make
+
+#### To run tests
+* make test-integration

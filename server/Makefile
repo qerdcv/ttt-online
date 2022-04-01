@@ -1,4 +1,6 @@
 COMPOSE ?= docker-compose -f docker-compose.yml
+COMPOSE_TEST ?= $(COMPOSE) -f docker-compose.test.yml
+
 APP_DB_USERNAME ?= postgres
 APP_DB_PASSWORD ?= postgres
 APP_DB_DATABASE ?= postgres
@@ -19,3 +21,10 @@ logs:
 rm:
 	$(COMPOSE) stop
 	$(COMPOSE) rm -f
+
+test-integration: build_test
+	$(COMPOSE_TEST) up --abort-on-container-exit
+	$(COMPOSE_TEST) rm -f
+
+build_test:
+	$(COMPOSE_TEST) build

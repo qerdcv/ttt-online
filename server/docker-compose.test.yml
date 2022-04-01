@@ -1,0 +1,17 @@
+version: '3.4'
+
+services:
+  app:
+    command: python -m pytest -v test/
+    restart: 'no'
+    build:
+      target: test
+    environment:
+      DB_URI: postgres://test:test@db:5432/test
+  db:
+    environment:
+      POSTGRES_USER: test
+      POSTGRES_PASSWORD: test
+      POSTGRES_DB: test
+    volumes: []
+    ports: []
