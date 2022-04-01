@@ -1,0 +1,26 @@
+version: '3.4'
+
+services:
+  app:
+    command: adev runserver .
+    build:
+      target: dev
+    environment:
+      SECRET: ${APP_SECRET}
+      DB_URI: postgres://${APP_DB_USERNAME}:${APP_DB_PASSWORD}@db:5432/${APP_DB_DATABASE}
+    ports:
+      - '4444:8000'
+    volumes:
+      - .:/server
+  db:
+    environment:
+      POSTGRES_USER: ${APP_DB_USERNAME}
+      POSTGRES_PASSWORD: ${APP_DB_PASSWORD}
+      POSTGRES_DB: ${APP_DB_DATABASE}
+    volumes:
+      - db:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+volumes:
+  db:

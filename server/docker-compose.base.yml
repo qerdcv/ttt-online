@@ -1,0 +1,14 @@
+version: '2.1'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - db
+    environment:
+      PYTHONUNBUFFERED: 1
+  db:
+    image: postgres:latest
+    restart: always
