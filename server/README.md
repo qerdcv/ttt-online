@@ -2,12 +2,13 @@
 
 ## TESTS
 
-### Integration
+___
+### Integration</h3>
 
-#### Requirements
-* Docker
-* docker-compose
-* Make
+* **Requirements**
+  * Docker
+  * docker-compose
+  * Make
 
-#### To run tests
-* make test-integration
+* **Usage**
+  * make test-integration

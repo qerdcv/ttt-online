@@ -99,3 +99,8 @@ async def update_game(pool: Pool, game: Game):
             json.dumps(game.field),
             game.current_state
         )
+
+
+async def cleanup(pool: Pool):
+    async with pool.acquire() as conn:
+        await conn.execute(get_query('cleanup'))

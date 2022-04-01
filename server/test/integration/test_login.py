@@ -2,8 +2,8 @@ async def test_correct(client, test_user):
     response = await client.post(
         '/api/login',
         json={
-            'username': 'test_user',
-            'password': '12345'
+            'username': test_user.username,
+            'password': test_user.password
         }
     )
     assert response.status == 200
@@ -17,8 +17,8 @@ async def test_wrong_password(client, test_user):
     response = await client.post(
         '/api/login',
         json={
-            'username': 'test_user',
-            'password': '123456'
+            'username': test_user.username,
+            'password': test_user.password + 'a'
         }
     )
     assert response.status == 400

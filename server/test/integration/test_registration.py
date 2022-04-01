@@ -1,11 +1,5 @@
 import pytest
 
-bad_username_password = [
-    ('te', '12'),
-    ('test_username', '12'),
-    ('te', '12345')
-]
-
 
 async def test_correct(client, user_object):
     response = await client.post(
@@ -20,12 +14,12 @@ async def test_correct(client, user_object):
     assert data['message'] == 'OK'
 
 
-async def test_user_already_exists(client, user_object, drop_user):
+async def test_user_already_exists(client, test_user):
     response = await client.post(
         '/api/registration',
         json={
-            'username': user_object.username,
-            'password': user_object.password
+            'username': test_user.username,
+            'password': test_user.password
         }
     )
     assert response.status == 409
@@ -33,8 +27,12 @@ async def test_user_already_exists(client, user_object, drop_user):
     assert data['message'] == 'user with that name already exists'
 
 
-@pytest.mark.parametrize('username, password', bad_username_password)
-async def test_validation_error(username, password, client, event_loop):
+@pytest.mark.parametrize('username, password', [
+    ('te', '12'),
+    ('test_username', '12'),
+    ('te', '12345')
+])
+async def test_validation_error(username, password, client):
     response = await client.post(
         '/api/registration',
         json={

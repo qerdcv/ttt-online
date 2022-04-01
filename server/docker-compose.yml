@@ -3,7 +3,6 @@ version: '3.4'
 services:
   app:
     command: adev runserver .
-    restart: always
     build:
       context: .
       target: dev
@@ -14,6 +13,7 @@ services:
       - .:/server
     depends_on:
       - db
+
     environment:
       PYTHONUNBUFFERED: 1
       SECRET: ${APP_SECRET}
@@ -25,6 +25,11 @@ services:
       POSTGRES_USER: ${APP_DB_USERNAME}
       POSTGRES_PASSWORD: ${APP_DB_PASSWORD}
       POSTGRES_DB: ${APP_DB_DATABASE}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $APP_DB_USERNAME"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
     volumes:
       - db:/var/lib/postgresql/data
     ports:

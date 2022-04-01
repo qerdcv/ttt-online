@@ -1,5 +1,3 @@
-import asyncio
-
 import pytest
 from aiohttp.test_utils import TestClient
 
@@ -8,9 +6,21 @@ from src import db
 from src.models.user import User
 
 
-@pytest.fixture(scope='session')
-def client(event_loop: asyncio.AbstractEventLoop, aiohttp_client) -> TestClient:
-    return event_loop.run_until_complete(aiohttp_client(create_app()))
+@pytest.fixture(autouse=True)
+async def set_up():
+    # Put code here
+    yield
+
+
+@pytest.fixture(autouse=True)
+async def therdown(client):
+    yield
+    await db.cleanup(client.app['pool'])
+
+
+@pytest.fixture
+async def client(aiohttp_client) -> TestClient:
+    return await aiohttp_client(create_app())
 
 
 @pytest.fixture
@@ -24,38 +34,10 @@ def user_object() -> User:
 
 
 @pytest.fixture
-async def drop_user(client, user_object, event_loop, request):
-    def delete_user():
-        async def delete():
-            pool = client.app['pool']
-            async with pool.acquire() as conn:
-                await conn.execute(
-                    "DELETE FROM users WHERE username=$1",
-                    user_object.username
-                )
-
-        event_loop.run_until_complete(delete())
-
-    request.addfinalizer(delete_user)
-    return drop_user
-
-
-@pytest.fixture
-async def test_user(client, user_object, event_loop, request):
+async def test_user(client, user_object):
     await db.create_user(
         client.app['pool'],
         user_object
     )
 
-    def delete_user():
-        async def delete():
-            pool = client.app['pool']
-            async with pool.acquire() as conn:
-                await conn.execute(
-                    "DELETE FROM users WHERE username=$1",
-                    user_object.username
-                )
-        event_loop.run_until_complete(delete())
-
-    request.addfinalizer(delete_user)
-    return test_user
+    return user_object
