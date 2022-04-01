@@ -93,7 +93,7 @@ async def get_games(request: web.Request) -> web.Response:
     games = await db.get_game_list(request.app['pool'], paginator.page, paginator.limit)
     return web.json_response(
         {
-            'games': [game.toJSON() for game in games],
+            'games': [game.to_json() for game in games],
             'paginator': paginator.to_json()
         },
         status=200

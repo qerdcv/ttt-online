@@ -19,4 +19,3 @@ logs:
 rm:
 	$(COMPOSE) stop
 	$(COMPOSE) rm -f
-
