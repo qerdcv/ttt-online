@@ -14,7 +14,7 @@ class Paginator:
             limit = int(limit)
             if limit > 100:
                 self.limit = 100
-            elif limit > 1:
+            elif limit >= 1:
                 self.limit = limit
         self.count_games = math.ceil(total_count / self.limit)
 
