@@ -2,7 +2,7 @@ version: '3.4'
 
 services:
   app:
-    command: adev runserver .
+    command: bash -c 'python wait_for_db.py && adev runserver .'
     build:
       target: dev
     environment:

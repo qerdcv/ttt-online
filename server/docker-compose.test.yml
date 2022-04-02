@@ -2,7 +2,7 @@ version: '3.4'
 
 services:
   app:
-    command: python -m pytest -v test/
+    command: bash -c 'python wait_for_db.py && python -m pytest -v test/'
     build:
       target: test
     environment:
