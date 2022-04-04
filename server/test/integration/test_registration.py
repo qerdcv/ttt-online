@@ -1,7 +1,10 @@
 import pytest
+from aiohttp.test_utils import TestClient
+
+from src.models.user import User
 
 
-async def test_correct(client, user_object):
+async def test_correct(client: TestClient, user_object: User):
     response = await client.post(
         '/api/registration',
         json={
@@ -14,7 +17,7 @@ async def test_correct(client, user_object):
     assert data['message'] == 'OK'
 
 
-async def test_user_already_exists(client, test_user):
+async def test_user_already_exists(client: TestClient, test_user: User):
     response = await client.post(
         '/api/registration',
         json={
@@ -27,12 +30,13 @@ async def test_user_already_exists(client, test_user):
     assert data['message'] == 'user with that name already exists'
 
 
+# TODO: refactor for max size password or username
 @pytest.mark.parametrize('username, password', [
     ('te', '12'),
     ('test_username', '12'),
     ('te', '12345')
 ])
-async def test_validation_error(username, password, client):
+async def test_validation_error(username: str, password: str, client: TestClient):
     response = await client.post(
         '/api/registration',
         json={
