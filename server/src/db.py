@@ -57,11 +57,11 @@ async def get_user(pool: Pool, user: User) -> t.Optional[User]:
         return User(dict(user))
 
 
-async def get_game(pool: Pool, gID: int) -> t.Optional[Game]:
+async def get_game(pool: Pool, _id: int) -> t.Optional[Game]:
     async with pool.acquire() as conn:
         game = await conn.fetchrow(
             get_query('get_game'),
-            gID
+            _id
         )
     if game is not None:
         game = Game(*game)

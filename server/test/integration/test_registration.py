@@ -1,7 +1,11 @@
+import typing as t
+
 import pytest
 
+from src.models.user import User
 
-async def test_correct(client, user_object):
+
+async def test_correct(client: TestClient, user_object: User):
     response = await client.post(
         '/api/registration',
         json={
@@ -14,7 +18,7 @@ async def test_correct(client, user_object):
     assert data['message'] == 'OK'
 
 
-async def test_user_already_exists(client, test_user):
+async def test_user_already_exists(client: TestClient, test_user: User):
     response = await client.post(
         '/api/registration',
         json={
@@ -27,12 +31,17 @@ async def test_user_already_exists(client, test_user):
     assert data['message'] == 'user with that name already exists'
 
 
-@pytest.mark.parametrize('username, password', [
-    ('te', '12'),
-    ('test_username', '12'),
-    ('te', '12345')
+@pytest.mark.parametrize('username, password, expected_result', [
+    ('te', '12', ('String value is too short.', 'String value is too short.')),
+    ('test_username', '12', 'String value is too short.'),
+    ('te', '12345', 'String value is too short.'),
+    ('test_username' * 3, '1' * 31, ('String value is too long.', 'String value is too long.')),
+    ('test_username' * 3, '12345', 'String value is too long.'),
+    ('test_username', '1' * 31, 'String value is too long.'),
+    ('te', '1' * 31, ('String value is too short.', 'String value is too long.')),
+    ('test_username' * 3, '1', ('String value is too long.', 'String value is too short.'))
 ])
-async def test_validation_error(username, password, client):
+async def test_validation_error(username: str, password: str, expected_result: t.Union[str, tuple], client: TestClient):
     response = await client.post(
         '/api/registration',
         json={
@@ -42,10 +51,11 @@ async def test_validation_error(username, password, client):
     )
     assert response.status == 400
     data = await response.json()
-    if data.get('username', False) and not data.get('password', False):
-        assert data['username'][0] == 'String value is too short.'
-    elif not data.get('username', False) and data.get('password', False):
-        assert data['password'][0] == 'String value is too short.'
+    if isinstance(expected_result, tuple):
+        assert data['username'][0] == expected_result[0]
+        assert data['password'][0] == expected_result[1]
     else:
-        assert data['username'][0] == 'String value is too short.'
-        assert data['password'][0] == 'String value is too short.'
+        if len(username) < 4 or len(username) > 30:
+            assert data['username'][0] == expected_result
+        else:
+            assert data['password'][0] == expected_result
