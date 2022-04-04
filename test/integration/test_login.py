@@ -64,7 +64,7 @@ async def test_user_dont_exists(client: TestClient, test_user: User):
 ])
 async def test_validation_error(username: str, password: str, expected_result: t.Union[str, tuple], client: TestClient):
     response = await client.post(
-        '/api/registration',
+        '/api/login',
         json={
             'username': username,
             'password': password

@@ -1,6 +1,7 @@
 import typing as t
 
 import pytest
+from aiohttp.test_utils import TestClient
 
 from src.models.user import User
 
