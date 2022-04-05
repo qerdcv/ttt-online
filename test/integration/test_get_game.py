@@ -5,7 +5,7 @@ from aiohttp.test_utils import TestClient
 from src.models.game import Game
 
 
-async def test_correct(client: TestClient, game_object: Game):
+async def test_success(client: TestClient, game_object: Game):
     response = await client.get(f'/api/games/{game_object.id}')
     assert response.status == 200
     data = await response.json()
@@ -24,6 +24,6 @@ async def test_game_not_found(client: TestClient, game_object: Game):
     'test_room_id_12345',
     '12345test_room_id_12345'
 ])
-async def test_uncorrect_gid(_id, client: TestClient):
+async def test_uncorrect_id(_id, client: TestClient):
     response = await client.get(f'/api/games/{_id}')
     assert response.status == 404

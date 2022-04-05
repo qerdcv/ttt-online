@@ -5,15 +5,21 @@ from aiohttp.test_utils import TestClient
 
 from src.models.user import User
 from src.encrypt import decode_jwt
-from src.db import get_user
 
 
-async def test_correct(client: TestClient, test_user: User):
+@pytest.mark.parametrize('remember, expected_max_age', [
+    (True, ''),
+    (False, '604800'),  # 604800 - 7 days in seconds
+    (None, '604800')
+])
+async def test_success(client: TestClient, test_user: User,
+                       remember: t.Optional[bool], expected_max_age: t.Optional[str]):
     response = await client.post(
         '/api/login',
         json={
             'username': test_user.username,
-            'password': test_user.password
+            'password': test_user.password,
+            'remember': remember
         }
     )
     assert response.status == 200
@@ -21,9 +27,9 @@ async def test_correct(client: TestClient, test_user: User):
     assert data['message'] == 'OK'
     assert 'token' in response.cookies
     user_info = decode_jwt(response.cookies.get('token').value)
-    test_user_stored = await get_user(client.app['pool'], test_user)
-    assert test_user_stored.id == user_info['id']
-    assert test_user_stored.username == user_info['username']
+    assert user_info['id'] == test_user.id
+    assert user_info['username'] == test_user.username
+    assert response.cookies['token']['max-age'] == expected_max_age
 
 
 async def test_wrong_password(client: TestClient, test_user: User):
@@ -53,16 +59,16 @@ async def test_user_dont_exists(client: TestClient, test_user: User):
 
 
 @pytest.mark.parametrize('username, password, expected_result', [
-    ('te', '12', ('String value is too short.', 'String value is too short.')),
-    ('test_username', '12', 'String value is too short.'),
-    ('te', '12345', 'String value is too short.'),
-    ('test_username' * 3, '1' * 31, ('String value is too long.', 'String value is too long.')),
-    ('test_username' * 3, '12345', 'String value is too long.'),
-    ('test_username', '1' * 31, 'String value is too long.'),
-    ('te', '1' * 31, ('String value is too short.', 'String value is too long.')),
-    ('test_username' * 3, '1', ('String value is too long.', 'String value is too short.'))
+    ('te', '12', (['String value is too short.'], ['String value is too short.'])),
+    ('test_username', '12', (None, ['String value is too short.'])),
+    ('te', '12345', (['String value is too short.'], None)),
+    ('test_username' * 3, '1' * 31, (['String value is too long.'], ['String value is too long.'])),
+    ('test_username' * 3, '12345', (['String value is too long.'], None)),
+    ('test_username', '1' * 31, (None, ['String value is too long.'])),
+    ('te', '1' * 31, (['String value is too short.'], ['String value is too long.'])),
+    ('test_username' * 3, '1', (['String value is too long.'], ['String value is too short.']))
 ])
-async def test_validation_error(username: str, password: str, expected_result: t.Union[str, tuple], client: TestClient):
+async def test_validation_error(username: str, password: str, expected_result: tuple, client: TestClient):
     response = await client.post(
         '/api/login',
         json={
@@ -72,11 +78,4 @@ async def test_validation_error(username: str, password: str, expected_result: t
     )
     assert response.status == 400
     data = await response.json()
-    if isinstance(expected_result, tuple):
-        assert data['username'][0] == expected_result[0]
-        assert data['password'][0] == expected_result[1]
-    else:
-        if len(username) < 4 or len(username) > 30:
-            assert data['username'][0] == expected_result
-        else:
-            assert data['password'][0] == expected_result
+    assert (data.get('username'), data.get('password')) == expected_result

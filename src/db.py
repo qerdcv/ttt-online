@@ -28,12 +28,13 @@ async def create_db(app: web.Application):
         await conn.execute(get_query('init'))
 
 
-async def create_user(pool: Pool, user: User):
+async def create_user(pool: Pool, user: User) -> User:
     async with pool.acquire() as conn:
-        await conn.execute(
+        user.id = await conn.fetchval(
             get_query('create_user'),
             user.username, encrypt(user.password)
         )
+    return user
 
 
 async def create_game(pool: Pool, user: User) -> Game:

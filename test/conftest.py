@@ -42,7 +42,7 @@ def user_object() -> User:
 async def game_object(client: TestClient, test_user: User) -> Game:
     return await db.create_game(
         client.app['pool'],
-        await db.get_user(client.app['pool'], test_user)
+        test_user
     )
 
 
@@ -57,7 +57,7 @@ async def test_user(client: TestClient, user_object: User):
 
 
 @pytest.fixture
-async def login_test_user(client: TestClient, test_user: User):
+async def logged_user(client: TestClient, test_user: User) -> User:
     await client.post(
         '/api/login',
         json={
@@ -65,7 +65,7 @@ async def login_test_user(client: TestClient, test_user: User):
             'password': test_user.password
         }
     )
-    yield
+    yield test_user
     await client.get('/api/logout')
 
 
