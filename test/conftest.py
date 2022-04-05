@@ -23,7 +23,7 @@ async def therdown(client: TestClient):
 
 @pytest.fixture
 async def client(aiohttp_client) -> TestClient:
-    return await aiohttp_client(create_app())
+    yield await aiohttp_client(create_app())
 
 
 @pytest.fixture
