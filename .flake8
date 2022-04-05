@@ -2,3 +2,8 @@
 max-line-length = 120
 show-source = True
 statistics = True
+exclude = 
+    env/
+    venv/
+    __pycache__/
+    .pytest_cache/

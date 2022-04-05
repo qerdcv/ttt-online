@@ -22,6 +22,9 @@ logs:
 rm:
 	$(COMPOSE_DEV) rm -sfv
 
+lint:
+	flake8
+
 setup-testenv:
 	docker run --name test-db \
 	-e POSTGRES_USER=test \
