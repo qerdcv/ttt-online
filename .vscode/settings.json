@@ -1,0 +1,6 @@
+{
+  "python.testing.pytestArgs": ["-vv", "test"],
+  "python.envFile": "${workspaceFolder}/.env",
+  "python.testing.unittestEnabled": false,
+  "python.testing.pytestEnabled": true
+}
