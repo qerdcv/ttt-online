@@ -1,26 +1,16 @@
-version: '3.4'
-
 services:
   app:
     command: adev runserver .
-    restart: always
     build:
-      context: .
       target: dev
-      dockerfile: Dockerfile
+    environment:
+      SECRET: ${APP_SECRET}
+      DB_URI: postgres://${APP_DB_USERNAME}:${APP_DB_PASSWORD}@db:5432/${APP_DB_DATABASE}
     ports:
       - '4444:8000'
     volumes:
       - .:/server
-    depends_on:
-      - db
-    environment:
-      PYTHONUNBUFFERED: 1
-      SECRET: ${APP_SECRET}
-      DB_URI: postgres://${APP_DB_USERNAME}:${APP_DB_PASSWORD}@db:5432/${APP_DB_DATABASE}
   db:
-    image: postgres:latest
-    restart: always
     environment:
       POSTGRES_USER: ${APP_DB_USERNAME}
       POSTGRES_PASSWORD: ${APP_DB_PASSWORD}
@@ -28,7 +18,9 @@ services:
     volumes:
       - db:/var/lib/postgresql/data
     ports:
-      - "5432:5432"
+      - '5432:5432'
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U $APP_DB_USERNAME" ]
 
 volumes:
   db:

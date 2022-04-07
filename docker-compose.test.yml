@@ -1,0 +1,15 @@
+services:
+  app:
+    command: python -m pytest -vv test/
+    build:
+      target: test
+    environment:
+      SECRET: fC3_dIulW3yvSolZJ4p7VmeQGNwHAGnXe0_wK-ZrMm4=
+      DB_URI: postgres://test:test@db:5432/test
+  db:
+    environment:
+      POSTGRES_USER: test
+      POSTGRES_PASSWORD: test
+      POSTGRES_DB: test
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U test" ]

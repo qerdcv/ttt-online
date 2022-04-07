@@ -66,7 +66,7 @@ async def create_game(request: web.Request) -> web.Response:
 
 @auth_required
 async def login_game(request: web.Request) -> web.Response:
-    game = await db.get_game(request.app['pool'], int(request.match_info['gID']))
+    game = await db.get_game(request.app['pool'], int(request.match_info['_id']))
     if game is None:
         return web.json_response({'message': 'game not found'}, status=404)
     if game.current_state != State.PENDING.value:
@@ -77,7 +77,7 @@ async def login_game(request: web.Request) -> web.Response:
 
 
 async def get_game(request: web.Request) -> web.Response:
-    game = await db.get_game(request.app['pool'], int(request.match_info['gID']))
+    game = await db.get_game(request.app['pool'], int(request.match_info['_id']))
     if game is None:
         return web.json_response({'message': 'game not found'}, status=404)
     return web.json_response(asdict(game), status=200)
@@ -93,7 +93,7 @@ async def get_games(request: web.Request) -> web.Response:
     games = await db.get_game_list(request.app['pool'], paginator.page, paginator.limit)
     return web.json_response(
         {
-            'games': [game.toJSON() for game in games],
+            'games': [game.to_json() for game in games],
             'paginator': paginator.to_json()
         },
         status=200

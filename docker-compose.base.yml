@@ -1,0 +1,19 @@
+version: '2.1'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      PYTHONUNBUFFERED: 1
+  db:
+    image: postgres:latest
+    restart: always
+    healthcheck:
+      interval: 5s
+      timeout: 5s
+      retries: 5
