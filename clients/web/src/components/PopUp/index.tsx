@@ -1,9 +1,14 @@
-import style from "components/PopUp/PopUp.module.scss";
-import { RoundedButton } from "components/Button";
-import { useContext, useState } from "react";
-import { PopUpContext } from "context/popUp.context";
+import style from 'components/PopUp/PopUp.module.scss';
+import { RoundedButton } from 'components/Button';
+import { useContext, useState } from 'react';
+import { PopUpContext } from 'context/popUp.context';
 
-export const PopUp = ({closeEvent, children}) => {
+interface IPopUp {
+  closeEvent(): void;
+  children?: React.ReactNode;
+}
+
+export const PopUp: React.FC<IPopUp> = ({ closeEvent, children }) => {
   const { popUpStack, onPopPopUpStack } = useContext(PopUpContext);
 
   const [className, setClassName] = useState(style.content.toString());
@@ -22,9 +27,9 @@ export const PopUp = ({closeEvent, children}) => {
       <div className={className}>
         <div className={style.contentNav}>
           {popUpStack.length > 1 && (
-            <RoundedButton onClick={onPopPopUpStack} value={"ᐊ"}/>
+            <RoundedButton onClick={onPopPopUpStack} value={'ᐊ'} />
           )}
-          <RoundedButton onClick={onClose} value={"⨉"}/>
+          <RoundedButton onClick={onClose} value={'⨉'} />
         </div>
         {children}
       </div>

@@ -1,30 +1,57 @@
 import style from 'components/Button/button.module.scss';
+import React from 'react';
 
-export const Button = ({value, classNames=[], type, onClick=()=>{}, disabled=false, children}) => {
+interface IButton {
+  classNames?: string[];
+  disabled?: boolean;
+  value?: string;
+  children?: React.ReactNode;
+
+  onClick?: React.MouseEventHandler<HTMLButtonElement>;
+}
+
+export const Button = ({
+  value,
+  classNames = [],
+  onClick = () => {},
+  disabled = false,
+  children,
+}: IButton) => {
   return (
-    <button className={[
-      style.btn,
-      style.fuzzy,
-      !disabled
-        ? style.btnActive
-        : null,
-      ...classNames
-    ].join(" ")} onClick={onClick} disabled={disabled}>
+    <button
+      className={[
+        style.btn,
+        style.fuzzy,
+        !disabled ? style.btnActive : null,
+        ...classNames,
+      ].join(' ')}
+      onClick={onClick}
+      disabled={disabled}
+    >
       {value || children}
     </button>
-  )
+  );
 };
 
-export const RoundedButton = ({value, onClick, classNames=[], disabled=false, children}) => {
+export const RoundedButton = ({
+  value,
+  onClick,
+  classNames = [],
+  disabled = false,
+  children,
+}: IButton) => {
   return (
-    <button className={[
-      style.btn,
-      style.round,
-      !disabled
-        ? style.btnActive
-        : null,
-      ...classNames ].join(" ")} onClick={onClick} disabled={disabled}>
+    <button
+      className={[
+        style.btn,
+        style.round,
+        !disabled ? style.btnActive : null,
+        ...classNames,
+      ].join(' ')}
+      onClick={onClick}
+      disabled={disabled}
+    >
       {value || children}
     </button>
-  )
-}
+  );
+};
