@@ -39,6 +39,16 @@ def user_object() -> User:
 
 
 @pytest.fixture
+def user_opponent_object(user_object: User) -> User:
+    return User(
+        {
+            'username': user_object.username + '_opponent',
+            'password': str(user_object)
+        }
+    )
+
+
+@pytest.fixture
 async def game_object(client: TestClient, test_user: User) -> Game:
     return await db.create_game(
         client.app['pool'],
@@ -47,13 +57,21 @@ async def game_object(client: TestClient, test_user: User) -> Game:
 
 
 @pytest.fixture
-async def test_user(client: TestClient, user_object: User):
+async def test_user(client: TestClient, user_object: User) -> User:
     await db.create_user(
         client.app['pool'],
         user_object
     )
-
     return user_object
+
+
+@pytest.fixture
+async def test_opponent(client: TestClient, user_opponent_object: User) -> User:
+    await db.create_user(
+        client.app['pool'],
+        user_opponent_object
+    )
+    return user_opponent_object
 
 
 @pytest.fixture
@@ -66,6 +84,19 @@ async def logged_user(client: TestClient, test_user: User) -> User:
         }
     )
     yield test_user
+    await client.get('/api/logout')
+
+
+@pytest.fixture
+async def logged_user_opponent(client: TestClient, test_opponent: User) -> User:
+    await client.post(
+        '/api/login',
+        json={
+            'username': test_opponent.username,
+            'password': test_opponent.password
+        }
+    )
+    yield test_opponent
     await client.get('/api/logout')
 
 

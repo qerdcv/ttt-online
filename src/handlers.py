@@ -71,6 +71,8 @@ async def login_game(request: web.Request) -> web.Response:
         return web.json_response({'message': 'game not found'}, status=404)
     if game.current_state != State.PENDING.value:
         return web.json_response({'message': 'invalid state'}, status=400)
+    if game.owner_id == request.user.id:
+        return web.json_response({'message': 'user already in game'}, status=409)
     game.set_opponent(request.user)
     await db.update_game(request.app['pool'], game)
     return web.json_response(asdict(game), status=200)
