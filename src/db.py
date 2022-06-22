@@ -4,7 +4,7 @@ import typing as t
 
 from aiohttp import web
 from asyncpg.pool import Pool
-from config import BASE_DIR
+from src.config import BASE_DIR
 from src.encrypt import encrypt
 from src.models.game import Game
 from src.models.user import User

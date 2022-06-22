@@ -2,7 +2,9 @@ services:
   app:
     command: python -m pytest -vv test/
     build:
+      context: ..
       target: test
+      dockerfile: ops/Dockerfile
     environment:
       SECRET: fC3_dIulW3yvSolZJ4p7VmeQGNwHAGnXe0_wK-ZrMm4=
       DB_URI: postgres://test:test@db:5432/test

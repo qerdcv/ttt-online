@@ -2,14 +2,16 @@ services:
   app:
     command: adev runserver .
     build:
+      context: ..
       target: dev
+      dockerfile: ops/Dockerfile
     environment:
       SECRET: ${APP_SECRET}
       DB_URI: postgres://${APP_DB_USERNAME}:${APP_DB_PASSWORD}@db:5432/${APP_DB_DATABASE}
     ports:
       - '4444:8000'
     volumes:
-      - .:/server
+      - ..:/server
   db:
     environment:
       POSTGRES_USER: ${APP_DB_USERNAME}
