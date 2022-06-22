@@ -1,4 +1,7 @@
 venv
 env
-Dockerfile
-docker-compose.yml
+ops
+.git
+.github
+.idea
+.vscode
