@@ -4,7 +4,7 @@ import pytest
 from aiohttp.test_utils import TestClient
 
 from src.app import create_app
-from src import db
+from migrations import db
 from src.models.user import User
 from src.models.game import Game
 

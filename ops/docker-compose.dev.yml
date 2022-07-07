@@ -1,6 +1,6 @@
 services:
   app:
-    command: adev runserver .
+    command: pgrate -p ${MIGRATIONS_FOLDER} -d ${DB_URI} && adev runserver .
     build:
       context: ..
       target: dev

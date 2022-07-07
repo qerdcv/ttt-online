@@ -1,7 +1,7 @@
 import pytest
 from aiohttp.test_utils import TestClient
 
-from src.db import update_game
+from migrations.db import update_game
 from src.models.user import User
 from src.models.game import Game, State
 
