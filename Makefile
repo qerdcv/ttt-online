@@ -7,6 +7,7 @@ APP_DB_PASSWORD ?= postgres
 APP_DB_DATABASE ?= postgres
 APP_SECRET ?= A55iwGUdDMUlBM1VpbkivhAssGW2f1Qclknipse11Gg=
 MIGRATIONS_FOLDER ?= ./src/db/migrations
+DB_URI ?= postgres://${APP_DB_USERNAME}:${APP_DB_PASSWORD}@db:5432/${APP_DB_DATABASE}
 
 .EXPORT_ALL_VARIABLES:
 
