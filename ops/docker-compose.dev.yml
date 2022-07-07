@@ -1,13 +1,13 @@
 services:
   app:
-    command: adev runserver .
+    command: sh -c "pgrate -p ${MIGRATIONS_FOLDER} -d ${DB_URI} && adev runserver ."
     build:
       context: ..
       target: dev
       dockerfile: ops/Dockerfile
     environment:
       SECRET: ${APP_SECRET}
-      DB_URI: postgres://${APP_DB_USERNAME}:${APP_DB_PASSWORD}@db:5432/${APP_DB_DATABASE}
+      DB_URI: ${DB_URI}
     ports:
       - '4444:8000'
     volumes:

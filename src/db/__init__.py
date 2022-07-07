@@ -2,7 +2,6 @@ import json
 import logging
 import typing as t
 
-from aiohttp import web
 from asyncpg.pool import Pool
 from src.config import BASE_DIR
 from src.encrypt import encrypt
@@ -15,17 +14,10 @@ log = logging.getLogger(__name__)
 
 def get_query(query_name: str) -> t.Optional[str]:
     try:
-        with open(BASE_DIR / f'queries/{query_name}.sql', 'r') as file:
+        with open(BASE_DIR / f'src/db/queries/{query_name}.sql', 'r') as file:
             return file.read()
     except FileNotFoundError:
         log.error(f'Query {query_name} not found')
-
-
-async def create_db(app: web.Application):
-    log.info('create_db')
-    pool: Pool = app['pool']
-    async with pool.acquire() as conn:
-        await conn.execute(get_query('init'))
 
 
 async def create_user(pool: Pool, user: User) -> User:
