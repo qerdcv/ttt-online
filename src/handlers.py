@@ -116,6 +116,8 @@ async def make_step(request: web.Request) -> web.Response:
         return web.json_response({'message': 'game not found'}, status=404)
     if game.current_state != State.IN_GAME.value:
         return web.json_response({'message': 'invalid state'}, status=400)
+    if request.user.id != game.current_player_id:
+        return web.json_response({'message': 'not your turn'}, status=403)
     try:
         game.update(step.coords)
     except CellOccupied:

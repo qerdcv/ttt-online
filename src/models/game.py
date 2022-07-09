@@ -50,19 +50,12 @@ class Game:
     owner_mark: chr = 'X'
     opponent_mark: chr = '0'
 
-    def _game_loop(self, field: t.List[str]):
+    def _is_win(self) -> bool:
+        field = [colum for line in self.field for colum in line]
         for condition in WIN_CONDITIONS:
-            if all(field[cell_id] == self._current_mark() for cell_id in condition):
-                self.winner_id = self.current_player_id
-                self.current_state = State.DONE.value
-                break
-
-    def _check_win(self):
-        one_line_field = [colum for line in self.field for colum in line]
-        if one_line_field.count('') == 0:
-            self.current_state = State.DONE.value
-        else:
-            self._game_loop(one_line_field)
+            if all(field[cell_idx] == self._current_mark() for cell_idx in condition):
+                return True
+        return False
 
     def _invert_player(self):
         if self.current_player_id == self.owner_id:
@@ -80,21 +73,22 @@ class Game:
         self.current_player_id = random.choice(
             [self.owner_id, self.opponent_id]
         )
-        self.owner_mark, self.opponent_mark = 'X', '0'
         self.current_state = State.IN_GAME.value
 
     def update(self, coords: t.List[int]):
-        if self.field[coords[0]][coords[1]] not in ('X', '0'):
-            field_size = len(self.field) ** 2
-            self.field[coords[0]][coords[1]] = self._current_mark()
-            self.step_count += 1
-            if self.step_count >= math.ceil(field_size / 2):
-                self._check_win()
-            self._invert_player()
-            if self.step_count > field_size:
-                self.current_state = State.DONE.value
-        else:
+        row, col = coords
+        if self.field[row][col]:
             raise CellOccupied
+        field_size = len(self.field) ** 2
+        self.field[row][col] = self._current_mark()
+        self.step_count += 1
+        if self.step_count >= math.ceil(field_size / 2) and self._is_win():
+            self.winner_id = self.current_player_id
+            self.current_state = State.DONE.value
+            return
+        self._invert_player()
+        if self.step_count == field_size:
+            self.current_state = State.DONE.value
 
     def to_json(self):
         return self.__dict__
