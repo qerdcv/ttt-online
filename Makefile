@@ -5,7 +5,7 @@ COMPOSE_TEST ?= $(COMPOSE) -f ops/docker-compose.test.yml -p ttto-test
 APP_DB_USERNAME ?= postgres
 APP_DB_PASSWORD ?= postgres
 APP_DB_DATABASE ?= postgres
-APP_SECRET ?= A55iwGUdDMUlBM1VpbkivhAssGW2f1Qclknipse11Gg=
+SECRET ?= A55iwGUdDMUlBM1VpbkivhAssGW2f1Qclknipse11Gg=
 MIGRATIONS_FOLDER ?= ./src/db/migrations
 DB_URI ?= postgres://${APP_DB_USERNAME}:${APP_DB_PASSWORD}@db:5432/${APP_DB_DATABASE}
 TEST_DB_URI ?= postgres://test:test@db:5432/test
@@ -47,6 +47,11 @@ migrate-testenv: ## Applying migrations for test environment (affter test-db is 
 cleanup-testenv: ## Clenup test environment
 	docker rm -f test-db
 
-test-integration: ## Build test image and run test containers
+test: test-integration test-unit
+
+test-integration: ## Build test image and run integration tests containers
 	$(COMPOSE_TEST) up --build --abort-on-container-exit
 	$(COMPOSE_TEST) rm -fsv
+
+test-unit: ## Run unit tests
+	python -m pytest -vv test/unit

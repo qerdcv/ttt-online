@@ -1,12 +1,12 @@
 services:
   app:
-    command: sh -c "pgrate -p ${MIGRATIONS_FOLDER} -d ${TEST_DB_URI} && python -m pytest -vv test/"
+    command: sh -c "pgrate -p ${MIGRATIONS_FOLDER} -d ${TEST_DB_URI} && python -m pytest -vv test/integration"
     build:
       context: ..
       target: test
       dockerfile: ops/Dockerfile
     environment:
-      SECRET: fC3_dIulW3yvSolZJ4p7VmeQGNwHAGnXe0_wK-ZrMm4=
+      SECRET: ${SECRET}
       DB_URI: ${TEST_DB_URI}
   db:
     environment:

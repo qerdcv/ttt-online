@@ -43,7 +43,7 @@ def user_opponent_object(user_object: User) -> User:
     return User(
         {
             'username': user_object.username + '_opponent',
-            'password': str(user_object)
+            'password': str(user_object.password)
         }
     )
 
@@ -54,6 +54,16 @@ async def game_object(client: TestClient, test_user: User) -> Game:
         client.app['pool'],
         test_user
     )
+
+
+@pytest.fixture
+async def game_with_opponent(client: TestClient, game_object: Game, test_opponent: User) -> Game:
+    game_object.set_opponent(test_opponent)
+    await db.update_game(
+        client.app['pool'],
+        game_object
+    )
+    return game_object
 
 
 @pytest.fixture
@@ -104,7 +114,6 @@ async def logged_user_opponent(client: TestClient, test_opponent: User) -> User:
 async def game_factory(client: TestClient, test_user: User) \
         -> t.Callable[[int], t.Awaitable[None]]:
     async def create_games(count: int):
-
         for _ in range(count):
             await db.create_game(
                 client.app['pool'],
