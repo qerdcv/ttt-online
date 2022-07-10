@@ -40,6 +40,10 @@ setup-testenv: ## Setup test environment (currently only database)
 	-d \
 	postgres:latest
 
+migrate-testenv: ## Applying migrations for test environment (affter test-db is up)
+	@echo Applying migrations
+	@pgrate -p ./src/db/migrations -d postgres://test:test@localhost:5433/test
+
 cleanup-testenv: ## Clenup test environment
 	docker rm -f test-db
 
