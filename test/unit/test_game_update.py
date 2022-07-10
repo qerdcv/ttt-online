@@ -1,5 +1,3 @@
-import typing as t
-
 import pytest
 
 from src.models.game import Game
@@ -12,12 +10,11 @@ def change_current_mark(owner_id: int, current_player_id: int) -> chr:
     return '0'
 
 
-def coords_list() -> t.List[t.Tuple[int]]:
-    return [(idx, jdx) for idx in range(2) for jdx in range(3)]
+COORDS_LIST = [(idx, jdx) for idx in range(2) for jdx in range(3)]
 
 
 def test_successes(fake_game_with_opponent: Game):
-    for coords in coords_list():
+    for coords in COORDS_LIST:
         current_mark = change_current_mark(
             fake_game_with_opponent.owner_id,
             fake_game_with_opponent.current_player_id
@@ -30,8 +27,7 @@ def test_successes(fake_game_with_opponent: Game):
 
 
 def test_cell_occupied(fake_game_with_opponent: Game):
-    for coords in coords_list():
+    for coords in COORDS_LIST:
         fake_game_with_opponent.update(coords)
-        with pytest.raises(CellOccupied) as excinfo:
+        with pytest.raises(CellOccupied):
             fake_game_with_opponent.update(coords)
-        assert excinfo.type is CellOccupied

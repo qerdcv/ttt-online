@@ -1,7 +1,8 @@
+import typing as t
+
 import pytest
 from aiohttp.test_utils import TestClient
 
-from src.db import update_game
 from src.models.user import User
 from src.models.game import Game, State
 
@@ -19,9 +20,10 @@ async def test_success(client: TestClient, logged_user_opponent: User, game_obje
     State.DONE.value
 ])
 async def test_invalid_state(state: str, client: TestClient,
+                             update_game: t.Callable[[Game], t.Awaitable[None]],
                              game_object: Game, logged_user):
     game_object.current_state = state
-    await update_game(client.app['pool'], game_object)
+    await update_game(game_object)
     response = await client.patch(f'/api/games/{game_object.id}/login')
     assert response.status == 400
     data = await response.json()

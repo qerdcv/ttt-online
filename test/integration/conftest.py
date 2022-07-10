@@ -18,6 +18,7 @@ async def set_up():
 @pytest.fixture(autouse=True)
 async def therdown(client: TestClient):
     yield
+    await client.get('/api/logout')
     await db.cleanup(client.app['pool'])
 
 
@@ -120,3 +121,24 @@ async def game_factory(client: TestClient, test_user: User) \
                 await db.get_user(client.app['pool'], test_user)
             )
     return create_games
+
+
+@pytest.fixture
+async def login_user(client: TestClient) -> t.Callable[[User], t.Awaitable[User]]:
+    async def logged_user(user: User):
+        await client.post(
+            '/api/login',
+            json={
+                'username': user.username,
+                'password': user.password
+            }
+        )
+        return user
+    return logged_user
+
+
+@pytest.fixture
+async def update_game(client: TestClient) -> t.Callable[[Game], t.Awaitable[None]]:
+    async def wrapped(game: Game):
+        await db.update_game(client.app['pool'], game)
+    return wrapped
