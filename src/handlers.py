@@ -7,7 +7,8 @@ from asyncpg.exceptions import UniqueViolationError
 from src import db
 from src.models.user import User
 from src.models.paginator import Paginator
-from src.models.game import State
+from src.models.game import State, Step
+from src.errors.game import CellOccupied
 from src.encrypt import encrypt_jwt, is_same_messages
 from src.decorators import auth_required
 
@@ -100,3 +101,26 @@ async def get_games(request: web.Request) -> web.Response:
         },
         status=200
     )
+
+
+@auth_required
+async def make_step(request: web.Request) -> web.Response:
+    data = await request.json()
+    try:
+        step = Step(data)
+        step.validate()
+    except DataError as e:
+        return web.json_response(e.to_primitive(), status=400)
+    game = await db.get_game(request.app['pool'], int(request.match_info['_id']))
+    if game is None:
+        return web.json_response({'message': 'game not found'}, status=404)
+    if game.current_state != State.IN_GAME.value:
+        return web.json_response({'message': 'invalid state'}, status=400)
+    if request.user.id != game.current_player_id:
+        return web.json_response({'message': 'not your turn'}, status=403)
+    try:
+        game.update(step.coords)
+    except CellOccupied:
+        return web.json_response({'message': 'cell is already occupied'}, status=409)
+    await db.update_game(request.app['pool'], game)
+    return web.json_response({'message': asdict(game)}, status=200)

@@ -6,7 +6,7 @@ services:
       target: dev
       dockerfile: ops/Dockerfile
     environment:
-      SECRET: ${APP_SECRET}
+      SECRET: ${SECRET}
       DB_URI: ${DB_URI}
     ports:
       - '4444:8000'
