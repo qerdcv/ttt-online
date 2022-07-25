@@ -24,7 +24,8 @@ async def test_success(client: TestClient, test_user: User,
     )
     assert response.status == 200
     data = await response.json()
-    assert data['message'] == 'OK'
+    assert data['id'] == test_user.id
+    assert data['username'] == test_user.username
     assert 'token' in response.cookies
     user_info = decode_jwt(response.cookies.get('token').value)
     assert user_info['id'] == test_user.id
