@@ -13,15 +13,6 @@ export const LoginRoom = () => {
   const { onPushPopUpStack } = useContext(PopUpContext);
   const [rooms, setRooms] = useState([]);
 
-  useEffect(() => {
-    const fetchGames = async () => {
-      const data = await request(Room.get);
-      setRooms(data['rooms']);
-    };
-
-    fetchGames();
-  }, [request]);
-
   if (loading) {
     return <div className={styles.rooms}>Loading...</div>;
   }

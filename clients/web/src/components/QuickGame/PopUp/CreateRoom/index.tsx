@@ -17,19 +17,9 @@ export const CreateRoom = () => {
     resetField,
   } = useForm();
   const { loading, error, request } = useHttp();
-  const [isPrivate, setIsPrivate] = useState(false);
-
-  useEffect(() => {
-    setValue('is_private', isPrivate);
-  }, [setValue, isPrivate]);
-
-  const onCheck = () => {
-    setIsPrivate(!isPrivate);
-    resetField('password');
-  };
 
   const onSubmit = async () => {
-    await request(Room.create);
+    // await request(Room.create);
   };
 
   return (
@@ -59,26 +49,6 @@ export const CreateRoom = () => {
           {errors.room_name && (
             <p className={formStyles.formControlError}>
               {errors.room_name?.message}
-            </p>
-          )}
-        </div>
-        <Checkbox label="Is Private?" name="is_private" onChange={onCheck} />
-        <div className={formStyles.formControl}>
-          <input
-            {...register('password', {
-              required: {
-                value: isPrivate,
-                message: 'Required if is private flag is ON',
-              },
-            })}
-            type="password"
-            placeholder="Room Password"
-            name="password"
-            className={!isPrivate ? 'hidden' : undefined}
-          />
-          {errors.room_password && (
-            <p className={formStyles.formControlError}>
-              {errors.room_password?.message}
             </p>
           )}
         </div>
