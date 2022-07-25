@@ -21,15 +21,22 @@ body {
 }
 
 input {
+  width: 100%;
+  padding: 10px;
+  font-size: 25px;
+  border: 1px solid $black;
+  transition: opacity .2s ease-in-out;
 
   margin: 10px 0;
 
-  &[type=text], &[type=password] {
-    width: 100%;
-    padding: 10px;
-    font-size: 25px;
-    border: 1px solid $black;
-    transition: opacity .2s ease-in-out;
+  &[type='number'] {
+    -moz-appearance: textfield;
+
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
   }
 
 }

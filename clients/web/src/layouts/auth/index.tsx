@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
 import { Checkbox } from 'components/Form';
@@ -35,14 +35,9 @@ export const Login = () => {
     }, [setValue]);
 
     const onSubmit: SubmitHandler<ILoginForm> = async (data) => {
-        try {
-            const user = await request<ILoginForm>(Auth.login, data);
-            setUser(user);
-            localStorage.setItem('user', JSON.stringify(user));
-        } catch (e) {
-            console.error(e);
-            return;
-        }
+        const user = await request<ILoginForm>(Auth.login.bind(null, data));
+        setUser(user);
+        localStorage.setItem('user', JSON.stringify(user));
         navigate('/');
     };
 
@@ -124,12 +119,7 @@ export const Register = () => {
     const navigate = useNavigate();
 
     const onSubmit: SubmitHandler<IRegisterForm> = async (data) => {
-        try {
-            await request<IRegisterForm>(Auth.register, data);
-        } catch (e) {
-            console.error(e);
-            return;
-        }
+        await request<IRegisterForm>(Auth.register.bind(null, data));
         navigate('/auth/login');
     };
 
@@ -186,7 +176,9 @@ export const Register = () => {
     );
 };
 
-export default {
+const exports = {
     Login,
     Register,
 };
+
+export default exports;

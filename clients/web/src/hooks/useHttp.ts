@@ -16,8 +16,7 @@ export const useHttp = <T> () => {
     setError({});
 
     try {
-      const resp = await callback(JSON.stringify(params));
-      console.log(resp)
+      const resp = await callback();
       data = resp.data;
       setLoading(false);
     } catch (e) {

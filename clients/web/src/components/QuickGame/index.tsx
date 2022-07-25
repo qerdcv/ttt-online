@@ -3,9 +3,8 @@ import { Button } from 'components/Button';
 import { PopUp } from 'components/PopUp';
 import {
   StartMenu,
-  LoginRoom,
+  LoginGame,
   CreateGame,
-  ConnectRoom,
   Unauthorized,
 } from 'components/QuickGame/PopUp';
 import { PopUpContext, Stack } from 'context/popUp.context';
@@ -24,8 +23,7 @@ export const QuickGame = (): React.ReactElement => {
     return {
       [Stack.StartMenu]: <StartMenu />,
       [Stack.CreateGame]: <CreateGame />,
-      [Stack.LoginRoom]: <LoginRoom />,
-      [Stack.ConnectRoom]: <ConnectRoom />,
+      [Stack.LoginGame]: <LoginGame />,
       [Stack.Unauthorized]: <Unauthorized />,
     };
   }, []);

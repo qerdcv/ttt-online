@@ -16,7 +16,7 @@ export const StartMenu = () => {
       <Button
         value="Login Game"
         classNames={[styles.startMenuButton]}
-        onClick={onPushPopUpStack.bind(null, Stack.LoginRoom)}
+        onClick={onPushPopUpStack.bind(null, Stack.LoginGame)}
       />
     </div>
   );
