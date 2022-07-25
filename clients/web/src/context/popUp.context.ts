@@ -8,6 +8,7 @@ export enum Stack {
   CreateRoom = 'createRoom',
   LoginRoom = 'loginRoom',
   ConnectRoom = 'connectRoom',
+  Unauthorized = 'unauthorized',
 }
 
 interface IPopUpContext {

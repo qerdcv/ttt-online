@@ -7,11 +7,15 @@ import {
   CreateRoom,
   Fast,
   ConnectRoom,
+  Unauthorized,
 } from 'components/QuickGame/PopUp';
 import { PopUpContext, Stack } from 'context/popUp.context';
+import { AuthContext } from 'context/auth.context';
+
 import styles from 'components/QuickGame/quick.module.scss';
 
 export const QuickGame = (): React.ReactElement => {
+  const { isAuthenticated } = useContext(AuthContext);
   const { popUpStack, resetPopUpStack, onPushPopUpStack } =
     useContext(PopUpContext);
 
@@ -24,6 +28,7 @@ export const QuickGame = (): React.ReactElement => {
       [Stack.LoginRoom]: <LoginRoom />,
       [Stack.ConnectRoom]: <ConnectRoom />,
       [Stack.Fast]: <Fast />,
+      [Stack.Unauthorized]: <Unauthorized />,
     };
   }, []);
 
@@ -33,7 +38,9 @@ export const QuickGame = (): React.ReactElement => {
       <Button
         value="Play !"
         classNames={[styles.mainBtn]}
-        onClick={onPushPopUpStack.bind(null, Stack.StartMenu)}
+        onClick={ isAuthenticated
+            ? onPushPopUpStack.bind(null, Stack.StartMenu)
+            : onPushPopUpStack.bind(null, Stack.Unauthorized)}
       />
       {popUpStack.length !== 0 && (
         <PopUp closeEvent={resetPopUpStack}>
