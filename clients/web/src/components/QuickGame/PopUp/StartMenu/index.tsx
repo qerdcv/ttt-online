@@ -9,17 +9,12 @@ export const StartMenu = () => {
   return (
     <div className={styles.startMenu}>
       <Button
-        value="Fast"
+        value="Create Game"
         classNames={[styles.startMenuButton]}
-        onClick={onPushPopUpStack.bind(null, Stack.Fast)}
+        onClick={onPushPopUpStack.bind(null, Stack.CreateGame)}
       />
       <Button
-        value="Create Room"
-        classNames={[styles.startMenuButton]}
-        onClick={onPushPopUpStack.bind(null, Stack.CreateRoom)}
-      />
-      <Button
-        value="Login Room"
+        value="Login Game"
         classNames={[styles.startMenuButton]}
         onClick={onPushPopUpStack.bind(null, Stack.LoginRoom)}
       />

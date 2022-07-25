@@ -31,7 +31,7 @@ export const ConnectRoom = () => {
                 required: true,
               })}
               type="password"
-              placeholder="Room password"
+              placeholder="Game password"
             />
             {errors?.room_password && (
               <p className={formStyle.formControlError}>

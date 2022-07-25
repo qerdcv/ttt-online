@@ -1,12 +1,9 @@
-import { useContext, useEffect, useState } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faLock } from '@fortawesome/free-solid-svg-icons';
+import { useContext, useState } from 'react';
 import { Button } from 'components/Button';
 import { PopUpContext, Stack } from 'context/popUp.context';
 import styles from 'components/QuickGame/PopUp/LoginRoom/loginRoom.module.scss';
 import { useHttp } from 'hooks/useHttp';
-import { Room } from 'api/room';
-import { IRoom } from 'types/room';
+import { IGame } from 'types/game';
 
 export const LoginRoom = () => {
   const { request, loading } = useHttp();
@@ -20,17 +17,14 @@ export const LoginRoom = () => {
   return (
     <div className={styles.rooms}>
       {rooms.length > 0 ? (
-        rooms.map((room: IRoom) => (
+        rooms.map((game: IGame) => (
           <Button
             classNames={[styles.roomsItem]}
-            key={room._id}
+            key={game.id}
             onClick={onPushPopUpStack.bind(null, Stack.ConnectRoom, {
-              ...room,
+              ...game,
             })}
-          >
-            <span className={styles.roomsItemName}>{room.room_name}</span>
-            {room.is_private && <FontAwesomeIcon icon={faLock} />}
-          </Button>
+            />
         ))
       ) : (
         <h1>No rooms yet</h1>

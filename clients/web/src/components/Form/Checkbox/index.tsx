@@ -1,6 +1,5 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import styles from 'components/Form/Checkbox/checkbox.module.scss';
-// import { useForm } from "react-hook-form";
 
 interface ICheckbox {
   label: string;

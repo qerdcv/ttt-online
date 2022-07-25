@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import axios, { AxiosError } from 'axios';
 
 export interface IError {
@@ -6,17 +6,19 @@ export interface IError {
   message?: string;
 }
 
-export const useHttp = () => {
+export const useHttp = <T> () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<IError>({});
 
-  const request = async (callback: any, params?: object) => {
-    let data = null;
+  const request = useCallback(async <V> (callback: any, params?: V): Promise<T> => {
+    let data: T;
     setLoading(true);
     setError({});
 
     try {
-      data = (await callback(JSON.stringify(params))).data;
+      const resp = await callback(JSON.stringify(params));
+      console.log(resp)
+      data = resp.data;
       setLoading(false);
     } catch (e) {
       setLoading(false);
@@ -26,12 +28,12 @@ export const useHttp = () => {
           status: aErr.response?.status,
           message: aErr.response?.data['message'],
         });
-      } else {
-        throw e;
       }
+
+      throw e;
     }
     return data;
-  };
+  }, [setLoading, setError]);
 
   return { loading, error, request };
-};
+}

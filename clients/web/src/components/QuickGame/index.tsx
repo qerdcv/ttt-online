@@ -4,8 +4,7 @@ import { PopUp } from 'components/PopUp';
 import {
   StartMenu,
   LoginRoom,
-  CreateRoom,
-  Fast,
+  CreateGame,
   ConnectRoom,
   Unauthorized,
 } from 'components/QuickGame/PopUp';
@@ -24,10 +23,9 @@ export const QuickGame = (): React.ReactElement => {
   } => {
     return {
       [Stack.StartMenu]: <StartMenu />,
-      [Stack.CreateRoom]: <CreateRoom />,
+      [Stack.CreateGame]: <CreateGame />,
       [Stack.LoginRoom]: <LoginRoom />,
       [Stack.ConnectRoom]: <ConnectRoom />,
-      [Stack.Fast]: <Fast />,
       [Stack.Unauthorized]: <Unauthorized />,
     };
   }, []);
@@ -38,7 +36,7 @@ export const QuickGame = (): React.ReactElement => {
       <Button
         value="Play !"
         classNames={[styles.mainBtn]}
-        onClick={ isAuthenticated
+        onClick={ isAuthenticated()
             ? onPushPopUpStack.bind(null, Stack.StartMenu)
             : onPushPopUpStack.bind(null, Stack.Unauthorized)}
       />

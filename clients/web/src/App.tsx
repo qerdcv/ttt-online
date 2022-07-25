@@ -1,16 +1,18 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { MainLayout } from 'layouts/main';
 import { Error } from 'layouts/Error';
 import { Header } from 'components/Header';
 import { Footer } from 'components/Footer';
+import { GameLayout } from 'layouts/game';
+import authLayout from 'layouts/auth';
 
 import { AuthContext } from 'context/auth.context';
 import { User } from 'types/user';
 
 function App(): React.ReactElement {
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [user, setUser] = useState<User>({});
+    const isAuthenticated = useCallback(() => !!Object.keys(user).length, [user]);
 
     useEffect(() => {
         let rawUser = localStorage.getItem("user")
@@ -25,9 +27,8 @@ function App(): React.ReactElement {
 
     return (
         <AuthContext.Provider value={{
-            isAuthenticated,
             user,
-            setIsAuthenticated,
+            isAuthenticated,
             setUser,
         }}>
             <Router>
@@ -35,9 +36,10 @@ function App(): React.ReactElement {
                 <Routes>
                     <Route index element={<MainLayout/>}/>
                     <Route path="auth">
-                        <Route path="login" element={<h1>Login page</h1>} />
-                        <Route path="register" element={<h1>Register page</h1>} />
+                        <Route path="login" element={<authLayout.Login />} />
+                        <Route path="register" element={<authLayout.Register />} />
                     </Route>
+                    <Route path="/games/:gameID" element={<GameLayout />}/>
                     <Route path="*" element={<Error code={404}/>}/>
                 </Routes>
                 <Footer/>

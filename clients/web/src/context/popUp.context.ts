@@ -4,8 +4,7 @@ const noon = function () {};
 
 export enum Stack {
   StartMenu = 'startMenu',
-  Fast = 'fast',
-  CreateRoom = 'createRoom',
+  CreateGame = 'createGame',
   LoginRoom = 'loginRoom',
   ConnectRoom = 'connectRoom',
   Unauthorized = 'unauthorized',
