@@ -43,7 +43,13 @@ async def login(request: web.Request) -> web.Response:
         return web.json_response({'message': 'user don\'t exists'}, status=404)
     if not is_same_messages(stored_user.password, user.password):
         return web.json_response({'message': 'wrong password'}, status=400)
-    response = web.json_response({'message': 'OK'}, status=200)
+    response = web.json_response(
+        {
+            'id': stored_user.id,
+            'username': stored_user.username
+        },
+        status=200
+    )
     response.set_cookie(
         name='token',
         value=encrypt_jwt(id=stored_user.id, username=stored_user.username),
