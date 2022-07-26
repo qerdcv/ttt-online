@@ -7,6 +7,7 @@ from src.config import BASE_DIR
 from src.encrypt import encrypt
 from src.models.game import Game
 from src.models.user import User
+from src.models.lobby import Lobby
 
 
 log = logging.getLogger(__name__)
@@ -92,6 +93,7 @@ async def update_game(pool: Pool, game: Game):
             json.dumps(game.field),
             game.current_state
         )
+    await Lobby().update(game.id, game)
 
 
 async def cleanup(pool: Pool):
