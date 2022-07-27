@@ -14,12 +14,12 @@ interface ILoginGameForm {
 
 export const LoginGame = () => {
     const navigate = useNavigate();
-    const {register, handleSubmit, formState: {errors}} = useForm<ILoginGameForm>();
-    const {request, loading, error} = useHttp();
+    const { register, handleSubmit, formState: { errors } } = useForm<ILoginGameForm>();
+    const { request, loading, error } = useHttp();
 
-    const onSubmit: SubmitHandler<ILoginGameForm>  = async ({gameID}) => {
-        await request(Game.loginGame.bind(null, gameID))
-        navigate(`/games/${gameID}`)
+    const onSubmit: SubmitHandler<ILoginGameForm>  = async ({ gameID }) => {
+        await request(Game.loginGame.bind(null, gameID));
+        navigate(`/games/${gameID}`);
     };
 
     return (
@@ -29,7 +29,7 @@ export const LoginGame = () => {
                 <input type='number' min='1' pattern='\d*' {...register('gameID', {
                     required: {
                         value: true,
-                        message: "Game ID is required!"
+                        message: 'Game ID is required!'
                     }
                 })} />
                 <span className={formStyles.formControlError}>

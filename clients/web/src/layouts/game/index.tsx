@@ -19,7 +19,7 @@ interface IPlayerProps {
     child?: React.ReactNode,
 }
 
-const Player = ({title, isActive}: IPlayerProps) => {
+const Player = ({ title, isActive }: IPlayerProps) => {
     return (
         <div className={isActive ? styles.gameActivePlayer : ''}>
             {title}
@@ -32,8 +32,8 @@ interface IJoinButton {
     child?: React.ReactNode,
 }
 
-const JoinButton = ({gameID}: IJoinButton) => {
-    const {loading, request} = useHttp();
+const JoinButton = ({ gameID }: IJoinButton) => {
+    const { loading, request } = useHttp();
     const handleJoin = async () => {
         await request(Game.loginGame.bind(null, gameID));
     };
@@ -48,29 +48,29 @@ interface IWinnerProps {
     winnerID: number,
 }
 
-const Winner = ({winnerID}: IWinnerProps) => {
+const Winner = ({ winnerID }: IWinnerProps) => {
     let title: string;
 
     if (winnerID === null) {
-        title = "DRAW!"
+        title = 'DRAW!';
     } else {
-        title = `${winnerID} WON!`
+        title = `${winnerID} WON!`;
     }
 
     return (
         <h1>{title}</h1>
-    )
-}
+    );
+};
 
 export const GameLayout = () => {
     const navigate = useNavigate();
     const [game, setGame] = useState<IGame>(defaultGame);
-    const {user} = useContext(AuthContext);
-    const {gameID} = useParams();
-    const {loading, request} = useHttp<IGame>();
+    const { user } = useContext(AuthContext);
+    const { gameID } = useParams();
+    const { loading, request } = useHttp<IGame>();
 
     const handleSourceEvent = useCallback((e: MessageEvent) => {
-        setGame(JSON.parse(e.data))
+        setGame(JSON.parse(e.data));
     }, [setGame]);
 
     useEffect(() => {
@@ -109,7 +109,7 @@ export const GameLayout = () => {
     };
 
     if (loading) {
-        return <h1>LOADING....</h1>
+        return <h1>LOADING....</h1>;
     }
 
     return (

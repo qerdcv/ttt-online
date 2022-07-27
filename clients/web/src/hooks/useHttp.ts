@@ -35,4 +35,4 @@ export const useHttp = <T> () => {
   }, [setLoading, setError]);
 
   return { loading, error, request };
-}
+};

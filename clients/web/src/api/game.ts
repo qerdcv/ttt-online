@@ -15,10 +15,10 @@ export const Game = {
     },
 
     async loginGame(gameID?: number) {
-        return await Api.patch(`/api/games/${gameID}/login`)
+        return await Api.patch(`/api/games/${gameID}/login`);
     },
 
     async step(req: IGameStepRequest, gameID: number): Promise<IGame> {
-        return await Api.patch(`/api/games/${gameID}`, req)
+        return await Api.patch(`/api/games/${gameID}`, req);
     }
 };

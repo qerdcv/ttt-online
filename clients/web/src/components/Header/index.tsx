@@ -10,10 +10,10 @@ export const Header = () => {
     const { isAuthenticated, setUser } = useContext(AuthContext);
     const { request } = useHttp();
     const logout = async () => {
-        await request(Auth.logout)
+        await request(Auth.logout);
         setUser({});
-        localStorage.removeItem("user");
-    }
+        localStorage.removeItem('user');
+    };
 
     return (
         <header className={styles.header}>

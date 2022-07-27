@@ -10,5 +10,5 @@ export const Unauthorized = () => {
                 <Link to="/auth/register" className={styles.unauthorizedLink}>Sign UP</Link>
             </div>
         </div>
-    )
+    );
 };

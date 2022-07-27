@@ -11,10 +11,10 @@ interface IFieldProps {
     field: TField,
 }
 
-export const Field = ({field, gameID}: IFieldProps) => {
-    const { request } = useHttp()
+export const Field = ({ field, gameID }: IFieldProps) => {
+    const { request } = useHttp();
     const handleCellClick = async (coords: Coords) => {
-        await request(Game.step.bind(null, {coords}, gameID));
+        await request(Game.step.bind(null, { coords }, gameID));
     };
 
     return (

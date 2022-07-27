@@ -24,10 +24,10 @@ export const Login = () => {
         register,
         handleSubmit,
         setValue,
-        formState: {errors}
+        formState: { errors }
     } = useForm<ILoginForm>();
-    const {loading, request, error} = useHttp<User>();
-    const {setUser} = useContext(AuthContext);
+    const { loading, request, error } = useHttp<User>();
+    const { setUser } = useContext(AuthContext);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -113,9 +113,9 @@ export const Register = () => {
     const {
         register,
         handleSubmit,
-        formState: {errors}
+        formState: { errors }
     } = useForm<IRegisterForm>();
-    const {loading, request, error} = useHttp();
+    const { loading, request, error } = useHttp();
     const navigate = useNavigate();
 
     const onSubmit: SubmitHandler<IRegisterForm> = async (data) => {

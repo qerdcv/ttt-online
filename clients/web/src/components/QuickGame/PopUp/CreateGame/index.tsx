@@ -11,8 +11,8 @@ export const CreateGame = () => {
   useEffect(() => {
     request(Game.create).then(
         game => navigate(`/games/${game.id}`)
-    )
-  }, []);
+    );
+  }, [request, navigate]);
 
   return <h1>Loading...</h1>;
 };

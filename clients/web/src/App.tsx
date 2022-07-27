@@ -15,12 +15,12 @@ function App(): React.ReactElement {
     const isAuthenticated = useCallback(() => !!Object.keys(user).length, [user]);
 
     useEffect(() => {
-        let rawUser = localStorage.getItem("user")
+        let rawUser = localStorage.getItem('user');
         if (rawUser) {
             try {
-                setUser(JSON.parse(rawUser))
+                setUser(JSON.parse(rawUser));
             } catch (e) {
-                console.error(e)
+                console.error(e);
             }
         }
     }, [setUser]);
