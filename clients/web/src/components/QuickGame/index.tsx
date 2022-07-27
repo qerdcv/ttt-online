@@ -7,7 +7,7 @@ import {
   CreateGame,
   Unauthorized,
 } from 'components/QuickGame/PopUp';
-import { PopUpContext, Stack } from 'context/popUp.context';
+import {PopUpContext, Stack} from 'context/popUp.context';
 import { AuthContext } from 'context/auth.context';
 
 import styles from 'components/QuickGame/quick.module.scss';
@@ -17,7 +17,7 @@ export const QuickGame = (): React.ReactElement => {
   const { popUpStack, resetPopUpStack, onPushPopUpStack } =
     useContext(PopUpContext);
 
-  const popUps = useMemo<{ [key in Stack]: React.ReactElement }>((): {
+  const popUps = useMemo<{[key in Stack]: React.ReactElement}>((): {
     [key in Stack]: React.ReactElement;
   } => {
     return {
