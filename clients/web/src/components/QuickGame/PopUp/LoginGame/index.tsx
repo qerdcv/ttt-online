@@ -27,7 +27,7 @@ export const LoginGame = () => {
 		<form onSubmit={handleSubmit(onSubmit)} className={styles.loginGame}>
 			<div className={formStyles.formControl}>
 				<label htmlFor="gameID">Game ID:</label>
-				<input type="number" min="1" pattern="\d*" {...register('gameID', {
+				<input type="number" min="1" pattern="\d*" autoFocus {...register('gameID', {
 					required: {
 						value: true,
 						message: 'Game ID is required!'
