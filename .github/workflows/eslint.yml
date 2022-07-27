@@ -2,8 +2,6 @@ name: ESLint
 
 on:
   push:
-    branches:
-      - '*'
     paths:
       - "clients/web/src/**/*.tsx"
       - "clients/web/src/**/*.ts"
