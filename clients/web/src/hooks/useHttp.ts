@@ -1,38 +1,39 @@
 import { useCallback, useState } from 'react';
-import axios, { AxiosError } from 'axios';
+import axios, { AxiosResponse } from 'axios';
 
 export interface IError {
   status?: number;
   message?: string;
 }
 
+interface IErrorResponse {
+  message: string
+}
+
 export const useHttp = <T> () => {
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<IError>({});
+	const [loading, setLoading] = useState<boolean>(false);
+	const [error, setError] = useState<IError>({});
 
-  const request = useCallback(async <V> (callback: any, params?: V): Promise<T> => {
-    let data: T;
-    setLoading(true);
-    setError({});
+	const request = useCallback(async (callback: () => Promise<AxiosResponse<T>>): Promise<T> => {
+		setLoading(true);
+		setError({});
 
-    try {
-      const resp = await callback();
-      data = resp.data;
-      setLoading(false);
-    } catch (e) {
-      setLoading(false);
-      if (axios.isAxiosError(e)) {
-        let aErr = e as AxiosError;
-        setError({
-          status: aErr.response?.status,
-          message: aErr.response?.data['message'],
-        });
-      }
+		try {
+			const resp: AxiosResponse<T> = await callback();
+			setLoading(false);
+			return resp.data;
+		} catch (e) {
+			setLoading(false);
+			if (axios.isAxiosError(e)) {
+				setError({
+					status: e.response?.status,
+					message: (e.response?.data as IErrorResponse).message,
+				});
+			}
 
-      throw e;
-    }
-    return data;
-  }, [setLoading, setError]);
+			throw e;
+		}
+	}, [setLoading, setError]);
 
-  return { loading, error, request };
+	return { loading, error, request };
 };

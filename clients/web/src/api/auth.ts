@@ -7,15 +7,15 @@ export interface IUserRequest {
 }
 
 export const Auth = {
-    async login(user: IUserRequest) {
-        return await Api.post('/api/login', user);
-    },
+	async login(user: IUserRequest) {
+		return await Api.post('/api/login', user);
+	},
 
-    async register(user: IUserRequest) {
-        return await Api.post('/api/registration', user);
-    },
+	async register(user: IUserRequest) {
+		return await Api.post('/api/registration', user);
+	},
 
-    async logout() {
-      return await Api.get('/api/logout');
-    },
+	async logout() {
+		return await Api.get('/api/logout');
+	},
 };

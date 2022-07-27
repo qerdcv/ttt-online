@@ -29,16 +29,16 @@ export interface IGame {
 }
 
 export const defaultGame: IGame = {
-    current_state: GameState.pending,
-    field: [
-        [Marks.noneMark, Marks.noneMark, Marks.noneMark],
-        [Marks.noneMark, Marks.noneMark, Marks.noneMark],
-        [Marks.noneMark, Marks.noneMark, Marks.noneMark],
-    ],
-    id: 0,
-    opponent_mark: Marks.opponentMark,
-    owner_id: 0,
-    owner_mark: Marks.ownerMark,
-    step_count: 0,
-    winner_id: 0
+	current_state: GameState.pending,
+	field: [
+		[Marks.noneMark, Marks.noneMark, Marks.noneMark],
+		[Marks.noneMark, Marks.noneMark, Marks.noneMark],
+		[Marks.noneMark, Marks.noneMark, Marks.noneMark],
+	],
+	id: 0,
+	opponent_mark: Marks.opponentMark,
+	owner_id: 0,
+	owner_mark: Marks.ownerMark,
+	step_count: 0,
+	winner_id: 0
 };

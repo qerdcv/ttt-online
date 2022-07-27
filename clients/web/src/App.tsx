@@ -8,44 +8,44 @@ import { GameLayout } from 'layouts/game';
 import authLayout from 'layouts/auth';
 
 import { AuthContext } from 'context/auth.context';
-import { User } from 'types/user';
+import { IUser } from 'types/user';
 
 function App(): React.ReactElement {
-    const [user, setUser] = useState<User>({});
-    const isAuthenticated = useCallback(() => !!Object.keys(user).length, [user]);
+	const [user, setUser] = useState<IUser>({});
+	const isAuthenticated = useCallback(() => !!Object.keys(user).length, [user]);
 
-    useEffect(() => {
-        let rawUser = localStorage.getItem('user');
-        if (rawUser) {
-            try {
-                setUser(JSON.parse(rawUser));
-            } catch (e) {
-                console.error(e);
-            }
-        }
-    }, [setUser]);
+	useEffect(() => {
+		const rawUser = localStorage.getItem('user');
+		if (rawUser) {
+			try {
+				setUser(JSON.parse(rawUser) as IUser);
+			} catch (e) {
+				console.error(e);
+			}
+		}
+	}, [setUser]);
 
-    return (
-        <AuthContext.Provider value={{
-            user,
-            isAuthenticated,
-            setUser,
-        }}>
-            <Router>
-                <Header/>
-                <Routes>
-                    <Route index element={<MainLayout/>}/>
-                    <Route path="auth">
-                        <Route path="login" element={<authLayout.Login />} />
-                        <Route path="register" element={<authLayout.Register />} />
-                    </Route>
-                    <Route path="/games/:gameID" element={<GameLayout />}/>
-                    <Route path="*" element={<Error code={404}/>}/>
-                </Routes>
-                <Footer/>
-            </Router>
-        </AuthContext.Provider>
-    );
+	return (
+		<AuthContext.Provider value={{
+			user,
+			isAuthenticated,
+			setUser,
+		}}>
+			<Router>
+				<Header/>
+				<Routes>
+					<Route index element={<MainLayout/>}/>
+					<Route path="auth">
+						<Route path="login" element={<authLayout.Login />} />
+						<Route path="register" element={<authLayout.Register />} />
+					</Route>
+					<Route path="/games/:gameID" element={<GameLayout />}/>
+					<Route path="*" element={<Error code={404}/>}/>
+				</Routes>
+				<Footer/>
+			</Router>
+		</AuthContext.Provider>
+	);
 }
 
 export default App;

@@ -1,16 +1,15 @@
 import { createContext } from 'react';
-import { User } from 'types/user';
+import { IUser } from 'types/user';
 
-interface IAuthContext {
-
-    user: User
+export interface IAuthContext {
+    user: IUser
     isAuthenticated: () => boolean,
-    setUser: (user: User) => void,
+    setUser: (user: IUser) => void,
 }
 
 export const AuthContext = createContext<IAuthContext>({
-    user: {},
+	user: {},
 
-    isAuthenticated: () => false,
-    setUser(_) {}
+	isAuthenticated: () => false,
+	setUser: (_) => {}
 });

@@ -15,13 +15,13 @@ interface IPopUpContext {
   onPopPopUpStack(): void;
   resetPopUpStack(): void;
   popUpStack: Stack[];
-  popUpCtx: { [key: string]: any };
+  popUpCtx: { [key: string]: object };
 }
 
 export const PopUpContext = createContext<IPopUpContext>({
-  onPushPopUpStack: function (_: Stack, ctx) {},
-  onPopPopUpStack: noon,
-  resetPopUpStack: noon,
-  popUpStack: [],
-  popUpCtx: {},
+	onPushPopUpStack: function (_: Stack, ctx) {},
+	onPopPopUpStack: noon,
+	resetPopUpStack: noon,
+	popUpStack: [],
+	popUpCtx: {},
 });
