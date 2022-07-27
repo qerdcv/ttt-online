@@ -2,7 +2,6 @@ services:
   app:
     command: sh -c "pgrate -p ${MIGRATIONS_FOLDER} -d ${DB_URI} && adev runserver ."
     build:
-      context: ..
       target: dev
       dockerfile: ops/Dockerfile
     environment:
@@ -11,7 +10,7 @@ services:
     ports:
       - '4444:8000'
     volumes:
-      - ..:/server
+      - ../ttt-online/:/server
   db:
     environment:
       POSTGRES_USER: ${APP_DB_USERNAME}
