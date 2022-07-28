@@ -3,7 +3,7 @@ name: Tests
 on:
   push:
     paths:
-      - '**.py'
+      - 'ttt-online/**.py'
 
 jobs:
   integration:

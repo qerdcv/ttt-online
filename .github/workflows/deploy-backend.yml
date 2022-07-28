@@ -1,0 +1,36 @@
+name: Deploy Backend
+
+on:
+  workflow_run:
+    workflows:
+      - 'Lint'
+      - 'Tests'
+    types:
+      - 'completed'
+  push:
+    branches:
+      - 'master'
+    paths:
+      - 'ttt-online/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install SSH Key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.RASPBERRY_PASS }}
+          known_hosts: 'placeholder'
+
+      - name: Adding known_hosts
+        run: ssh-keyscan -H ${{ secrets.RASPBERRY_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Deploy
+        run: |
+          rsync -avz ttt-online/ ${{ secrets.RASPBERRY_USER }}@${{ secrets.RASPBERRY_HOST }}:~/ttt-online
+          ssh -T ${{ secrets.RASPBERRY_USER }}@${{ secrets.RASPBERRY_HOST }} << EOF
+            sudo systemctl restart ttto
+          EOF
