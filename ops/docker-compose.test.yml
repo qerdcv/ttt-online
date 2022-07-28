@@ -2,7 +2,6 @@ services:
   app:
     command: sh -c "pgrate -p ${MIGRATIONS_FOLDER} -d ${TEST_DB_URI} && python -m pytest -vv test/integration"
     build:
-      context: ..
       target: test
       dockerfile: ops/Dockerfile
     environment:

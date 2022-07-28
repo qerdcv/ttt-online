@@ -42,7 +42,7 @@ setup-testenv: ## Setup test environment (currently only database)
 
 migrate-testenv: ## Applying migrations for test environment (affter test-db is up)
 	@echo Applying migrations
-	@pgrate -p ./src/db/migrations -d postgres://test:test@localhost:5433/test
+	@pgrate -p ./ttt-online/src/db/migrations -d postgres://test:test@localhost:5433/test?sslmode=disable
 
 cleanup-testenv: ## Clenup test environment
 	docker rm -f test-db
@@ -54,4 +54,4 @@ test-integration: ## Build test image and run integration tests containers
 	$(COMPOSE_TEST) rm -fsv
 
 test-unit: ## Run unit tests
-	python -m pytest -vv test/unit
+	@pytest -vv ttt-online/test/unit
