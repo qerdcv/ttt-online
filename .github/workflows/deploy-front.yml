@@ -1,0 +1,38 @@
+name: Deploy Frontend
+
+on:
+  workflow_run:
+    workflows:
+     - 'ESLint'
+    types:
+     - 'completed'
+  push:
+    branches:
+      - 'master'
+    paths:
+      - 'clients/web/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install modules
+        working-directory: clients/web
+        run: npm i
+      - name: Build static
+        working-directory: clients/web
+        run: npm run build
+      - name: Install SSH Key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.RASPBERRY_PASS }}
+          known_hosts: 'placeholder'
+
+      - name: Adding known_hosts
+        run: ssh-keyscan -H ${{ secrets.RASPBERRY_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Sync static
+        working-directory: clients/web
+        run: |
+          rsync -avz build/ ${{ secrets.RASPBERRY_USER }}@${{ secrets.RASPBERRY_HOST }}:/var/www/html/ttt-online
