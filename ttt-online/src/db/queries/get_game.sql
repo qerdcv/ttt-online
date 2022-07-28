@@ -1,3 +1,1 @@
-SELECT *
-FROM games
-WHERE id=$1;
+SELECT * FROM get_games WHERE id=$1;

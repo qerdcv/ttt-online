@@ -11,7 +11,11 @@ async def test_success(client: TestClient, logged_user_opponent: User, game_obje
     response = await client.patch(f'/api/games/{game_object.id}/login')
     assert response.status == 200
     data = await response.json()
+    print(f'data = {data}')
+    print(f"data['opponent_name'] = {data['opponent_name']}")
+    print(f'logged_user_opponent.username = {logged_user_opponent.username}')
     assert data['opponent_id'] == logged_user_opponent.id
+    assert data['opponent_name'] == logged_user_opponent.username
     assert data['current_state'] == State.IN_GAME.value
 
 

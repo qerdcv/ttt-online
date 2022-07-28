@@ -2,7 +2,7 @@ import math
 import random
 import typing as t
 from enum import Enum
-from dataclasses import dataclass
+from dataclasses import dataclass, asdict
 
 from schematics.models import Model
 from schematics.types import IntType, ListType
@@ -38,17 +38,23 @@ class Step(Model):
 
 
 @dataclass
+class Player:
+    id: t.Optional[int] = None,
+    name: t.Optional[str] = None,
+    mark: t.Optional[chr] = None
+
+
+@dataclass
 class Game:
     id: int
-    owner_id: int
-    opponent_id: t.Optional[int]
-    current_player_id: t.Optional[int]
+    owner: Player
     step_count: int
-    winner_id: t.Optional[int]
     field: t.Union[str, t.List[chr]]
     current_state: str
-    owner_mark: chr = 'X'
-    opponent_mark: chr = '0'
+    opponent: t.Optional[Player] = None
+    current_player: t.Optional[Player] = None
+    winner: t.Optional[Player] = None
+    player_prefixes = {'owner', 'opponent', 'current_player', 'winner'}
 
     def _is_win(self) -> bool:
         field = [colum for line in self.field for colum in line]
@@ -58,20 +64,24 @@ class Game:
         return False
 
     def _invert_player(self):
-        if self.current_player_id == self.owner_id:
-            self.current_player_id = self.opponent_id
+        if self.current_player.id == self.owner.id:
+            self.current_player = self.opponent
         else:
-            self.current_player_id = self.owner_id
+            self.current_player = self.owner
 
     def _current_mark(self) -> chr:
-        if self.current_player_id == self.owner_id:
-            return self.owner_mark
-        return self.opponent_mark
+        if self.current_player.id == self.owner.id:
+            return self.owner.mark
+        return self.opponent.mark
 
     def set_opponent(self, opponent: User):
-        self.opponent_id = opponent.id
-        self.current_player_id = random.choice(
-            [self.owner_id, self.opponent_id]
+        self.opponent = Player(
+            id=opponent.id,
+            name=opponent.username,
+            mark='0'
+        )
+        self.current_player = random.choice(
+            [self.owner, self.opponent]
         )
         self.current_state = State.IN_GAME.value
 
@@ -83,12 +93,29 @@ class Game:
         self.field[row][col] = self._current_mark()
         self.step_count += 1
         if self.step_count >= math.ceil(field_size / 2) and self._is_win():
-            self.winner_id = self.current_player_id
+            self.winner = self.current_player
             self.current_state = State.DONE.value
             return
         self._invert_player()
         if self.step_count == field_size:
             self.current_state = State.DONE.value
 
-    def to_json(self):
-        return self.__dict__
+    @classmethod
+    def from_dict(cls, data: dict):
+        players_mark = ['X' if data[f'{prefix}_id'] == data['owner_id'] else '0' for prefix in cls.player_prefixes]
+
+        for idx, prefix in enumerate(cls.player_prefixes):
+            id = data.pop(f'{prefix}_id')
+            name = data.pop(f'{prefix}_name')
+            mark = players_mark[idx]
+            if id is None:
+                mark = None
+            data[prefix] = Player(id=id, name=name, mark=mark)
+        return cls(**data)
+
+    def to_dict(self) -> dict:
+        res = asdict(self)
+        for prefix in self.player_prefixes:
+            if not res[prefix]['id']:
+                res[prefix] = None
+        return res

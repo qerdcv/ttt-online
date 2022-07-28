@@ -1,3 +1,1 @@
-INSERT INTO games(owner_id)
-VALUES ($1)
-RETURNING *;
+SELECT * FROM create_game(game_owner_id:=$1);
