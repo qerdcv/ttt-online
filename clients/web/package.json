@@ -22,14 +22,15 @@
     "react-hook-form": "^7.22.5",
     "react-router-dom": "^6.2.1",
     "react-scripts": "^5.0.0",
-    "typescript": "^4.6.3",
     "web-vitals": "^2.1.2"
   },
   "scripts": {
-    "start": "env NODE_OPTIONS=--openssl-legacy-provider react-scripts start",
+    "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "lint": "eslint src/**/*.ts src/**/*.tsx",
+    "lint-fix": "eslint src/**/*.ts src/**/*.tsx --fix"
   },
   "eslintConfig": {
     "extends": [
@@ -50,6 +51,10 @@
     ]
   },
   "devDependencies": {
-    "sass": "^1.49.11"
+    "@typescript-eslint/eslint-plugin": "^5.31.0",
+    "@typescript-eslint/parser": "^5.31.0",
+    "eslint-plugin-react": "^7.30.1",
+    "sass": "^1.49.11",
+    "typescript": "^4.7.4"
   }
 }

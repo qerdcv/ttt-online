@@ -1,0 +1,19 @@
+@import "src/styles/colors";
+
+.unauthorized {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  flex-direction: column;
+  text-align: center;
+
+  height: 100%;
+
+  &Link {
+    font-size: 30px;
+
+    display: inline;
+    margin: 0 10px;
+    color: $black;
+  }
+}

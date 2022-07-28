@@ -1,7 +1,11 @@
-@import "styles/colors";
+@import "src/styles/colors";
 
 .form {
   &Control {
+    display: flex;
+    flex-direction: column;
+    margin: 10px 0;
+
     &Error {
       margin-bottom: 10px;
       color: $red;

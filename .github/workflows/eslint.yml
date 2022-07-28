@@ -1,0 +1,19 @@
+name: ESLint
+
+on:
+  push:
+    paths:
+      - "clients/web/src/**/*.tsx"
+      - "clients/web/src/**/*.ts"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install modules
+        working-directory: clients/web
+        run: npm i
+      - name: Run ESLint
+        working-directory: clients/web
+        run: npm run lint

@@ -1,0 +1,38 @@
+extends:
+  - 'react-app'
+  - 'eslint:recommended'
+  - 'plugin:react/recommended'
+  - 'plugin:@typescript-eslint/recommended'
+  - 'plugin:@typescript-eslint/recommended-requiring-type-checking'
+
+parser: '@typescript-eslint/parser'
+parserOptions:
+  project: tsconfig.json
+
+rules:
+  indent:
+    - 'error'
+    - 'tab'
+  quotes:
+      - 'error'
+      - 'single'
+  semi:
+    - 'error'
+    - 'always'
+  eol-last:
+      - 'error'
+      - 'always'
+  object-curly-spacing:
+      - 'error'
+      - 'always'
+  array-bracket-spacing:
+      - 'error'
+      - 'never'
+  computed-property-spacing:
+    - 'error'
+    - 'never'
+
+  '@typescript-eslint/unbound-method': 'off'
+  '@typescript-eslint/no-empty-function': 'off'
+  '@typescript-eslint/no-misused-promises': 'off'
+
