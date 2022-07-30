@@ -72,7 +72,7 @@ COORDS = (0, 0)
 async def test_successes(first_coord: t.Tuple[int], coords_list: t.Tuple[t.Tuple[int]], is_win: bool,
                          client: TestClient, login_user: t.Callable[[User], t.Awaitable[User]],
                          test_user: User, test_opponent: User, game_with_opponent: Game):
-    if test_user.id == game_with_opponent.current_player_id:
+    if test_user.id == game_with_opponent.current_player.id:
         await login_user(test_user)
     else:
         await login_user(test_opponent)
@@ -83,12 +83,12 @@ async def test_successes(first_coord: t.Tuple[int], coords_list: t.Tuple[t.Tuple
     await client.get('/api/logout')
     for idx, coords in enumerate(coords_list):
         game = await response.json()
-        if test_user.id == game['message']['current_player_id']:
+        if test_user.id == game['message']['current_player']['id']:
             await login_user(test_user)
         else:
             await login_user(test_opponent)
         if is_win and idx == len(coords_list) - 1:
-            expected_winner_id = game_with_opponent.current_player_id
+            expected_winner_id = game_with_opponent.current_player.id
         response = await client.patch(
             f'/api/games/{game_with_opponent.id}',
             json={'coords': coords}
@@ -97,9 +97,9 @@ async def test_successes(first_coord: t.Tuple[int], coords_list: t.Tuple[t.Tuple
     assert response.status == 200
     data = await response.json()
     if is_win:
-        assert data['message']['winner_id'] == expected_winner_id
+        assert data['message']['winner']['id'] == expected_winner_id
     else:
-        assert data['message']['winner_id'] is None
+        assert data['message']['winner'] is None
 
 
 async def test_unauth(client: TestClient, game_with_opponent: Game):
@@ -167,7 +167,7 @@ async def test_invalid_state(state: str, client: TestClient,
 
 async def test_not_your_turn(client: TestClient, login_user: t.Callable[[User], t.Awaitable[User]],
                              test_user: User, test_opponent: User, game_with_opponent: Game):
-    if test_user.id != game_with_opponent.current_player_id:
+    if test_user.id != game_with_opponent.current_player.id:
         await login_user(test_user)
     else:
         await login_user(test_opponent)
@@ -182,7 +182,7 @@ async def test_not_your_turn(client: TestClient, login_user: t.Callable[[User], 
 
 async def test_cell_occupied(client: TestClient, login_user: t.Callable[[User], t.Awaitable[User]],
                              test_user: User, test_opponent: User, game_with_opponent: Game):
-    if test_user.id == game_with_opponent.current_player_id:
+    if test_user.id == game_with_opponent.current_player.id:
         await login_user(test_user)
     else:
         await login_user(test_opponent)
@@ -192,7 +192,7 @@ async def test_cell_occupied(client: TestClient, login_user: t.Callable[[User], 
     )
     await client.get('/api/logout')
     data = await response.json()
-    if test_user.id == data['message']['current_player_id']:
+    if test_user.id == data['message']['current_player']['id']:
         await login_user(test_user)
     else:
         await login_user(test_opponent)

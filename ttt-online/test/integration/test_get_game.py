@@ -1,5 +1,4 @@
 import pytest
-from dataclasses import asdict
 from aiohttp.test_utils import TestClient
 
 from src.models.game import Game
@@ -9,7 +8,7 @@ async def test_success(client: TestClient, game_object: Game):
     response = await client.get(f'/api/games/{game_object.id}')
     assert response.status == 200
     data = await response.json()
-    assert data == asdict(game_object)
+    assert data == game_object.to_dict()
 
 
 async def test_game_not_found(client: TestClient, game_object: Game):
