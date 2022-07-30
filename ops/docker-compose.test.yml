@@ -5,6 +5,7 @@ services:
       target: test
       dockerfile: ops/Dockerfile
     environment:
+      ENV: ${ENV}
       SECRET: ${SECRET}
       DB_URI: ${TEST_DB_URI}
   db:

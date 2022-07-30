@@ -3,7 +3,7 @@ import logging
 import typing as t
 
 from asyncpg.pool import Pool
-from src.config import BASE_DIR
+from src.config import Config
 from src.encrypt import encrypt
 from src.models.game import Game
 from src.models.user import User
@@ -15,7 +15,7 @@ log = logging.getLogger(__name__)
 
 def get_query(query_name: str) -> t.Optional[str]:
     try:
-        with open(BASE_DIR / f'src/db/queries/{query_name}.sql', 'r') as file:
+        with open(Config.base_dir / f'src/db/queries/{query_name}.sql', 'r') as file:
             return file.read()
     except FileNotFoundError:
         log.error(f'Query {query_name} not found')

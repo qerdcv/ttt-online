@@ -6,6 +6,7 @@ from aiohttp_sse import sse_response
 
 from src import db
 from src.models.lobby import Lobby
+from src.config import Config
 
 
 async def stream(request: web.Request) -> web.Response:
@@ -15,7 +16,14 @@ async def stream(request: web.Request) -> web.Response:
 
     lobby = Lobby()
     queue = lobby.join(game_id)
-    async with sse_response(request) as response:
+    headers = {}
+
+    if Config.is_dev:
+        headers.update({
+            'Access-Control-Allow-Origin': '*'
+        })
+
+    async with sse_response(request, headers=headers) as response:
         try:
             while not response.task.done():
                 game = await queue.get()
