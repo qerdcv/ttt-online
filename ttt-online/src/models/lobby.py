@@ -27,7 +27,7 @@ class Lobby:
         self.__lobby[game_id].remove(queue)
 
         if not self.__lobby[game_id]:
-            del(self.__lobby[game_id])
+            del self.__lobby[game_id]
 
     async def update(self, game_id: int, game: Game):
         if game_id not in self.__lobby:
