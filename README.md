@@ -2,6 +2,9 @@
 
 [![Lint](https://github.com/qerdcv/ttt-online/actions/workflows/linter.yml/badge.svg)](https://github.com/qerdcv/ttt-online/actions/workflows/linter.yml)
 [![Tests](https://github.com/qerdcv/ttt-online/actions/workflows/tests.yml/badge.svg)](https://github.com/qerdcv/ttt-online/actions/workflows/tests.yml)
+[![ESLint](https://github.com/qerdcv/ttt-online/actions/workflows/eslint.yml/badge.svg)](https://github.com/qerdcv/ttt-online/actions/workflows/eslint.yml)
+[![Deploy Backend](https://github.com/qerdcv/ttt-online/actions/workflows/deploy-backend.yml/badge.svg)](https://github.com/qerdcv/ttt-online/actions/workflows/deploy-backend.yml)
+[![Deploy Frontend](https://github.com/qerdcv/ttt-online/actions/workflows/deploy-front.yml/badge.svg)](https://github.com/qerdcv/ttt-online/actions/workflows/deploy-front.yml)
 
 # ttt-online
 
