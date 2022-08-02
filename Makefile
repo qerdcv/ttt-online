@@ -2,6 +2,7 @@ COMPOSE ?= docker-compose -f ops/docker-compose.base.yml
 COMPOSE_DEV ?= $(COMPOSE) -f ops/docker-compose.dev.yml -p ttto-dev
 COMPOSE_TEST ?= $(COMPOSE) -f ops/docker-compose.test.yml -p ttto-test
 
+ENV ?= dev
 APP_DB_USERNAME ?= postgres
 APP_DB_PASSWORD ?= postgres
 APP_DB_DATABASE ?= postgres

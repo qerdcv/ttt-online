@@ -5,6 +5,7 @@ services:
       target: dev
       dockerfile: ops/Dockerfile
     environment:
+      ENV: ${ENV}
       SECRET: ${SECRET}
       DB_URI: ${DB_URI}
     ports:

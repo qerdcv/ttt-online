@@ -76,11 +76,15 @@ export const GameLayout = () => {
 
 	useEffect(() => {
 		let es: EventSource;
+		const sourceURL = !process.env.NODE_ENV
+			? `/api/games/${gameID}/sse`
+			: `http://localhost:4444/api/games/${gameID}/sse`;
+
 		request(Game.getByID.bind(null, gameID))
 			.then(game => {
 				setGame(game);
 
-				es = new EventSource(`/api/games/${gameID}/sse`);
+				es = new EventSource(sourceURL);
 				es.addEventListener('message', handleSourceEvent);
 			})
 			.catch(e => {
