@@ -1,5 +1,3 @@
-from dataclasses import asdict
-
 from aiohttp import web
 from schematics.exceptions import DataError
 from asyncpg.exceptions import UniqueViolationError
@@ -68,7 +66,7 @@ async def logout(request: web.Request) -> web.Response:
 @auth_required
 async def create_game(request: web.Request) -> web.Response:
     game = await db.create_game(request.app['pool'], request.user)
-    return web.json_response(asdict(game), status=201)
+    return web.json_response(game.to_dict(), status=201)
 
 
 @auth_required
@@ -78,18 +76,18 @@ async def login_game(request: web.Request) -> web.Response:
         return web.json_response({'message': 'game not found'}, status=404)
     if game.current_state != State.PENDING.value:
         return web.json_response({'message': 'invalid state'}, status=400)
-    if game.owner_id == request.user.id:
+    if game.owner.id == request.user.id:
         return web.json_response({'message': 'user already in game'}, status=409)
     game.set_opponent(request.user)
     await db.update_game(request.app['pool'], game)
-    return web.json_response(asdict(game), status=200)
+    return web.json_response(game.to_dict(), status=200)
 
 
 async def get_game(request: web.Request) -> web.Response:
     game = await db.get_game(request.app['pool'], int(request.match_info['_id']))
     if game is None:
         return web.json_response({'message': 'game not found'}, status=404)
-    return web.json_response(asdict(game), status=200)
+    return web.json_response(game.to_dict(), status=200)
 
 
 async def get_games(request: web.Request) -> web.Response:
@@ -102,7 +100,7 @@ async def get_games(request: web.Request) -> web.Response:
     games = await db.get_game_list(request.app['pool'], paginator.page, paginator.limit)
     return web.json_response(
         {
-            'games': [game.to_json() for game in games],
+            'games': [game.to_dict() for game in games],
             'paginator': paginator.to_json()
         },
         status=200
@@ -122,11 +120,11 @@ async def make_step(request: web.Request) -> web.Response:
         return web.json_response({'message': 'game not found'}, status=404)
     if game.current_state != State.IN_GAME.value:
         return web.json_response({'message': 'invalid state'}, status=400)
-    if request.user.id != game.current_player_id:
+    if request.user.id != game.current_player.id:
         return web.json_response({'message': 'not your turn'}, status=403)
     try:
         game.update(step.coords)
     except CellOccupied:
         return web.json_response({'message': 'cell is already occupied'}, status=409)
     await db.update_game(request.app['pool'], game)
-    return web.json_response({'message': asdict(game)}, status=200)
+    return web.json_response({'message': game.to_dict()}, status=200)

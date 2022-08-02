@@ -16,14 +16,14 @@ COORDS_LIST = [(idx, jdx) for idx in range(2) for jdx in range(3)]
 def test_successes(fake_game_with_opponent: Game):
     for coords in COORDS_LIST:
         current_mark = change_current_mark(
-            fake_game_with_opponent.owner_id,
-            fake_game_with_opponent.current_player_id
+            fake_game_with_opponent.owner.id,
+            fake_game_with_opponent.current_player.id
         )
-        prev_current_player_id = fake_game_with_opponent.current_player_id
+        prev_current_player_id = fake_game_with_opponent.current_player.id
         row, col = coords
         fake_game_with_opponent.update([row, col])
         assert fake_game_with_opponent.field[row][col] == current_mark
-        assert fake_game_with_opponent.current_player_id != prev_current_player_id
+        assert fake_game_with_opponent.current_player.id != prev_current_player_id
 
 
 def test_cell_occupied(fake_game_with_opponent: Game):

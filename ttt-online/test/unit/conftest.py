@@ -1,7 +1,7 @@
 import pytest
 
 from src.models.user import User
-from src.models.game import Game, State
+from src.models.game import Game, State, Player
 
 
 @pytest.fixture
@@ -28,11 +28,15 @@ def user_opponent_object(user_object: User) -> User:
 def fake_game_object() -> Game:
     return Game(
         id=1,
-        owner_id=1,
-        opponent_id=None,
-        current_player_id=None,
+        owner=Player(
+            id=1,
+            name='test',
+            mark='X'
+        ),
+        opponent=None,
+        current_player=None,
         step_count=0,
-        winner_id=None,
+        winner=None,
         field=[
             ['', '', ''],
             ['', '', ''],
@@ -44,6 +48,6 @@ def fake_game_object() -> Game:
 
 @pytest.fixture
 def fake_game_with_opponent(fake_game_object: Game, user_opponent_object: User) -> Game:
-    user_opponent_object.id = fake_game_object.owner_id + 1
+    user_opponent_object.id = fake_game_object.owner.id + 1
     fake_game_object.set_opponent(user_opponent_object)
     return fake_game_object

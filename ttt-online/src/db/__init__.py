@@ -36,7 +36,7 @@ async def create_game(pool: Pool, user: User) -> Game:
             get_query('create_game'),
             user.id
         )
-    game = Game(*game)
+    game = Game.from_dict(dict(game))
     game.field = json.loads(game.field)
     return game
 
@@ -58,7 +58,7 @@ async def get_game(pool: Pool, _id: int) -> t.Optional[Game]:
             _id
         )
     if game is not None:
-        game = Game(*game)
+        game = Game.from_dict(dict(game))
         game.field = json.loads(game.field)
     return game
 
@@ -69,7 +69,7 @@ async def get_game_list(pool: Pool, page: int, limit: int) -> t.List[Game]:
             get_query('get_game_list'),
             (page - 1) * limit, limit
         )
-    games = [Game(*row) for row in rows]
+    games = [Game.from_dict(dict(row)) for row in rows]
     for game in games:
         game.field = json.loads(game.field)
     return games
@@ -85,11 +85,11 @@ async def update_game(pool: Pool, game: Game):
         await conn.execute(
             get_query('update_game'),
             game.id,
-            game.owner_id,
-            game.opponent_id,
-            game.current_player_id,
+            game.owner.id,
+            game.opponent.id,
+            game.current_player.id,
             game.step_count,
-            game.winner_id,
+            game.winner.id,
             json.dumps(game.field),
             game.current_state
         )

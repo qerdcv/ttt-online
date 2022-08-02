@@ -9,7 +9,8 @@ async def test_success(client: TestClient, logged_user: User):
     )
     assert response.status == 201
     data = await response.json()
-    assert data['owner_id'] == logged_user.id
+    assert data['owner']['id'] == logged_user.id
+    assert data['owner']['name'] == logged_user.username
 
 
 async def test_unauth(client: TestClient):
