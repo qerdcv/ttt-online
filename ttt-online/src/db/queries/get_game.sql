@@ -1,1 +1,1 @@
-SELECT * FROM get_games WHERE id=$1;
+SELECT * FROM games_with_usernames WHERE id=$1;

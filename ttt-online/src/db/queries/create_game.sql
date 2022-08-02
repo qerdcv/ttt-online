@@ -1,13 +1,12 @@
--- SELECT * FROM create_game(game_owner_id:=$1);
-with g as ( insert into games (owner_id) values ($1) returning * )
-select
+WITH g AS ( INSERT INTO games (owner_id) VALUES ($1) RETURNING * )
+SELECT
     g.*,
-    ow.username as owner_name,
-    op.username as opponent_name,
-    win.username as winner_name,
-    cp.username as current_player_name
-from g
-left join users ow on ow.id = g.owner_id
-left join users op on op.id = g.opponent_id
-left join users win on win.id = g.winner_id
-left join users cp on cp.id = g.current_player_id;
+    ow.username AS owner_name,
+    op.username AS opponent_name,
+    win.username AS winner_name,
+    cp.username AS current_player_name
+FROM g
+LEFT JOIN users ow ON ow.id = g.owner_id
+LEFT JOIN users op ON op.id = g.opponent_id
+LEFT JOIN users win ON win.id = g.winner_id
+LEFT JOIN users cp ON cp.id = g.current_player_id;

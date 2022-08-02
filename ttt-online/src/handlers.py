@@ -79,8 +79,6 @@ async def login_game(request: web.Request) -> web.Response:
     if game.owner.id == request.user.id:
         return web.json_response({'message': 'user already in game'}, status=409)
     game.set_opponent(request.user)
-    print(game)
-    print('---Opponent is set---')
     await db.update_game(request.app['pool'], game)
     return web.json_response(game.to_dict(), status=200)
 
@@ -128,7 +126,5 @@ async def make_step(request: web.Request) -> web.Response:
         game.update(step.coords)
     except CellOccupied:
         return web.json_response({'message': 'cell is already occupied'}, status=409)
-    print(game)
-    print('---Opponent is set---')
     await db.update_game(request.app['pool'], game)
     return web.json_response({'message': game.to_dict()}, status=200)

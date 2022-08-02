@@ -1,4 +1,4 @@
-CREATE OR REPLACE VIEW get_games AS
+CREATE OR REPLACE VIEW games_with_usernames AS
 SELECT
     g.*,
     owner.username as owner_name,

@@ -1,1 +1,1 @@
-DROP VIEW IF EXISTS get_games;
+DROP VIEW IF EXISTS games_with_usernames;

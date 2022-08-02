@@ -102,15 +102,14 @@ class Game:
 
     @classmethod
     def from_dict(cls, data: dict):
-        players_mark = ['X' if data[f'{prefix}_id'] == data['owner_id'] else '0' for prefix in cls.player_prefixes]
-
+        owner_id = data['owner_id']
         for idx, prefix in enumerate(cls.player_prefixes):
-            id = data.pop(f'{prefix}_id')
+            id_ = data.pop(f'{prefix}_id')
             name = data.pop(f'{prefix}_name')
-            mark = players_mark[idx]
-            if id is None:
+            mark = 'X' if id_ == owner_id else '0'
+            if id_ is None:
                 mark = None
-            data[prefix] = Player(id=id, name=name, mark=mark)
+            data[prefix] = Player(id=id_, name=name, mark=mark)
         return cls(**data)
 
     def to_dict(self) -> dict:
