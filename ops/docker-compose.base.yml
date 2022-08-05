@@ -1,7 +1,7 @@
 version: '2.1'
 
 services:
-  app:
+  profiler:
     build:
       context: ..
     depends_on:

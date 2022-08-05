@@ -56,3 +56,13 @@ test-integration: ## Build test image and run integration tests containers
 
 test-unit: ## Run unit tests
 	@pytest -vv ttt-online/test/unit
+
+generate-proto: ## Generate the Python code by proto file by service (route to service directory)
+	@if [ -d $(service) ]; then\
+		for filename in $(service)/proto/*.proto; do \
+		  python -m grpc_tools.protoc -I$(service)/proto/ --python_out=$(service)/gen/ --grpc_python_out=$(service)/gen/ $$filename;\
+		done;\
+		echo Python files have been generated in \"./$(service)/gen\";\
+	else\
+ 		echo service directory \"./$(service)\" not-found;\
+ 	fi

@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+service Profiler {
+  rpc LoginUser(LoginUserRequest) returns (Response) {}
+  rpc CreateUser(CreateUserRequest) returns (Response) {}
+}
+
+message LoginUserRequest {
+  string username = 1;
+  string password = 2;
+}
+
+message CreateUserRequest {
+  string username = 1;
+  string password = 2;
+//  string password2 = 3;
+}
+
+message Response {
+  string uid = 1;
+  string username = 2;
+}

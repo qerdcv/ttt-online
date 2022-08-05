@@ -1,17 +1,29 @@
 services:
-  app:
-    command: sh -c "pgrate -p ${MIGRATIONS_FOLDER} -d ${DB_URI} && adev runserver ."
+  profiler:
+    command: sh -c "pgrate -p ${MIGRATIONS_FOLDER} -d ${DB_URI} && watchmedo auto-restart --recursive --pattern=*.py python /profiler/main.py"
     build:
       target: dev
       dockerfile: ops/Dockerfile
     environment:
-      ENV: ${ENV}
       SECRET: ${SECRET}
       DB_URI: ${DB_URI}
     ports:
-      - '4444:8000'
+      - '50051:50051'
     volumes:
-      - ../ttt-online/:/server
+      - ../profiler:/profiler
+#  app:
+#    command: sh -c "pgrate -p ${MIGRATIONS_FOLDER} -d ${DB_URI} && adev runserver ."
+#    build:
+#      target: dev
+#      dockerfile: ops/Dockerfile
+#    environment:
+#      ENV: ${ENV}
+#      SECRET: ${SECRET}
+#      DB_URI: ${DB_URI}
+#    ports:
+#      - '4444:8000'
+#    volumes:
+#      - ../ttt-online/:/server
   db:
     environment:
       POSTGRES_USER: ${APP_DB_USERNAME}
