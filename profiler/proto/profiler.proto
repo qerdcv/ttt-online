@@ -1,5 +1,7 @@
 syntax = "proto3";
 
+package profiler;
+
 service Profiler {
   rpc LoginUser(LoginUserRequest) returns (Response) {}
   rpc CreateUser(CreateUserRequest) returns (Response) {}
@@ -13,7 +15,6 @@ message LoginUserRequest {
 message CreateUserRequest {
   string username = 1;
   string password = 2;
-//  string password2 = 3;
 }
 
 message Response {

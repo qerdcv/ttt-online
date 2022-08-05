@@ -19,12 +19,11 @@ TEST_DB_URI ?= postgres://test:test@db:5432/test
 help: ## Show help message
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
-run: ## Build and start containers
-	$(COMPOSE_DEV) up --build --force-recreate -d
-	@echo http://localhost:4444
+run-%: ## Build and start containers
+	$(COMPOSE_DEV) up --build --force-recreate -d $*
 
-logs: ## Attach to the containers logs
-	$(COMPOSE_DEV) logs -f
+logs-%: ## Attach to the containers logs
+	$(COMPOSE_DEV) logs -f $*
 
 rm: ## Remove containers
 	$(COMPOSE_DEV) rm -sfv
@@ -59,9 +58,7 @@ test-unit: ## Run unit tests
 
 generate-proto: ## Generate the Python code by proto file by service (route to service directory)
 	@if [ -d $(service) ]; then\
-		for filename in $(service)/proto/*.proto; do \
-		  python -m grpc_tools.protoc -I$(service)/proto/ --python_out=$(service)/gen/ --grpc_python_out=$(service)/gen/ $$filename;\
-		done;\
+		python3 -m grpc_tools.protoc -I gen=$(service)/proto --python_out=$(service) --grpc_python_out=$(service) $(service)/proto/*.proto;\
 		echo Python files have been generated in \"./$(service)/gen\";\
 	else\
  		echo service directory \"./$(service)\" not-found;\

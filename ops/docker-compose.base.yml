@@ -4,6 +4,17 @@ services:
   profiler:
     build:
       context: ..
+      dockerfile: ops/profiler/Dockerfile
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      PYTHONUNBUFFERED: 1
+  
+  ttt_online:
+    build:
+      context: ..
+      dockerfile: ops/ttt-online/Dockerfile
     depends_on:
       db:
         condition: service_healthy
