@@ -19,9 +19,9 @@ interface IPopUpContext {
 }
 
 export const PopUpContext = createContext<IPopUpContext>({
-	onPushPopUpStack: function (_: Stack, ctx) {},
-	onPopPopUpStack: noon,
-	resetPopUpStack: noon,
-	popUpStack: [],
-	popUpCtx: {},
+  onPushPopUpStack: function (_: Stack, ctx) {},
+  onPopPopUpStack: noon,
+  resetPopUpStack: noon,
+  popUpStack: [],
+  popUpCtx: {},
 });

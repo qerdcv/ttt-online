@@ -11,29 +11,29 @@ interface IErrorResponse {
 }
 
 export const useHttp = <T> () => {
-	const [loading, setLoading] = useState<boolean>(false);
-	const [error, setError] = useState<IError>({});
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<IError>({});
 
-	const request = useCallback(async (callback: () => Promise<AxiosResponse<T>>): Promise<T> => {
-		setLoading(true);
-		setError({});
+  const request = useCallback(async (callback: () => Promise<AxiosResponse<T>>): Promise<T> => {
+    setLoading(true);
+    setError({});
 
-		try {
-			const resp: AxiosResponse<T> = await callback();
-			setLoading(false);
-			return resp.data;
-		} catch (e) {
-			setLoading(false);
-			if (axios.isAxiosError(e)) {
-				setError({
-					status: e.response?.status,
-					message: (e.response?.data as IErrorResponse).message,
-				});
-			}
+    try {
+      const resp: AxiosResponse<T> = await callback();
+      setLoading(false);
+      return resp.data;
+    } catch (e) {
+      setLoading(false);
+      if (axios.isAxiosError(e)) {
+        setError({
+          status: e.response?.status,
+          message: (e.response?.data as IErrorResponse).message,
+        });
+      }
 
-			throw e;
-		}
-	}, [setLoading, setError]);
+      throw e;
+    }
+  }, [setLoading, setError]);
 
-	return { loading, error, request };
+  return { loading, error, request };
 };

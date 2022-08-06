@@ -8,8 +8,8 @@ export interface IAuthContext {
 }
 
 export const AuthContext = createContext<IAuthContext>({
-	user: {},
+  user: {},
 
-	isAuthenticated: () => false,
-	setUser: (_) => {}
+  isAuthenticated: () => false,
+  setUser: (_) => {}
 });
