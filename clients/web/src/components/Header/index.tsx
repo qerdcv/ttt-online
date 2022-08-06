@@ -12,7 +12,7 @@ export const Header = () => {
   const logout = () => {
     request(Auth.logout)
       .then(() => {
-        setUser({});
+        setUser(null);
         localStorage.removeItem('user');
       })
       .catch(console.error);

@@ -26,7 +26,7 @@ export interface IGame {
     opponent_mark: string,
 
     opponent?: IUser,
-    current?: IUser,
+    current_player?: IUser,
     winner?: IUser,
 }
 

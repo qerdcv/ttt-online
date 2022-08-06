@@ -11,8 +11,8 @@ import { AuthContext } from 'context/auth.context';
 import { IUser } from 'types/user';
 
 function App(): React.ReactElement {
-  const [user, setUser] = useState<IUser>({});
-  const isAuthenticated = useCallback(() => !!Object.keys(user).length, [user]);
+  const [user, setUser] = useState<IUser | null>(null);
+  const isAuthenticated = useCallback(() => !!user, [user]);
 
   useEffect(() => {
     const rawUser = localStorage.getItem('user');

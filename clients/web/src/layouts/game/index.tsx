@@ -12,6 +12,7 @@ import { Button } from 'components/Button';
 import { defaultGame, GameState, IGame } from 'types/game';
 
 import styles from 'layouts/game/game.module.scss';
+import { IUser } from 'types/user';
 
 interface IPlayerProps {
     title: string,
@@ -34,32 +35,33 @@ interface IJoinButton {
 
 const JoinButton = ({ gameID }: IJoinButton) => {
   const { loading, request } = useHttp();
-  const handleJoin = () => {
-    request(Game.loginGame.bind(null, gameID))
-      .catch(console.error);
+  const handleJoin = async () => {
+    await request(Game.loginGame.bind(null, gameID));
   };
 
   return (
-    <Button value="JOIN!" onClick={handleJoin} disabled={loading}/>
+    <Button value="JOIN!" classNames={[styles.gameJoinButton]} onClick={handleJoin} disabled={loading}/>
   );
 };
 
 interface IWinnerProps {
     child?: React.ReactNode,
-    winnerID: number,
+    winner?: IUser,
 }
 
-const Winner = ({ winnerID }: IWinnerProps) => {
+const Winner = ({ winner }: IWinnerProps) => {
   let title: string;
 
-  if (winnerID === null) {
+  const winnerName = winner?.username;
+
+  if (!winnerName) {
     title = 'DRAW!';
   } else {
-    title = `${winnerID} WON!`;
+    title = `${winnerName} WON!`;
   }
 
   return (
-    <h1>{title}</h1>
+    <h1 className={styles.gameWinner}>{title}</h1>
   );
 };
 
@@ -100,13 +102,13 @@ export const GameLayout = () => {
   }, [setGame, handleSourceEvent, navigate, request, gameID]);
 
   const getOpponentTitle = (): string => {
-    const title = 'Opponent';
+    const title = game.opponent?.username || 'Opponent';
 
-    if (game.opponent_id === null) {
+    if (game.opponent === null) {
       return title + ' (not joined)';
     }
 
-    if (user.id === game.opponent_id) {
+    if (user?.id === game.opponent?.id) {
       return title + ' (you)';
     }
 
@@ -122,20 +124,20 @@ export const GameLayout = () => {
       <div className={styles.game}>
         <h1>Game ID: {game.id}</h1>
         <div className={styles.gamePlayers}>
-          <Player isActive={game.current_state === GameState.inGame && game.current_player_id === game.owner_id}
-            title={`Owner ${game.owner_id === user.id ? '(you)' : ''}`}/>
-          <Player isActive={game.current_state === GameState.inGame && game.current_player_id === game.opponent_id}
+          <Player isActive={game.current_state === GameState.inGame && game.current_player?.id === game.owner.id}
+            title={`${game.owner.username || 'Owner'} ${game.owner.id === user?.id ? '(you)' : ''}`}/>
+          <Player isActive={game.current_state === GameState.inGame && game.current_player?.id === game.opponent?.id}
             title={getOpponentTitle()}/>
         </div>
         <div>
           <h3>{game.current_state}</h3>
           <Field field={game?.field} gameID={game.id} />
         </div>
-        {game.current_state === GameState.pending && user.id && user.id !== game.owner_id && (
+        {game.current_state === GameState.pending && user?.id !== game.owner.id && (
           <JoinButton gameID={game.id}/>
         )}
         {game.current_state === GameState.done && (
-          <Winner winnerID={game.winner_id} />
+          <Winner winner={game.winner} />
         )}
       </div>
     </>
