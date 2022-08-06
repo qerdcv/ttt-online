@@ -40,7 +40,7 @@ class Step(Model):
 @dataclass
 class Player:
     id: t.Optional[int] = None,
-    name: t.Optional[str] = None,
+    username: t.Optional[str] = None,
     mark: t.Optional[chr] = None
 
 
@@ -77,7 +77,7 @@ class Game:
     def set_opponent(self, opponent: User):
         self.opponent = Player(
             id=opponent.id,
-            name=opponent.username,
+            username=opponent.username,
             mark='0'
         )
         self.current_player = random.choice(
@@ -103,13 +103,13 @@ class Game:
     @classmethod
     def from_dict(cls, data: dict):
         owner_id = data['owner_id']
-        for idx, prefix in enumerate(cls.player_prefixes):
+        for _, prefix in enumerate(cls.player_prefixes):
             id_ = data.pop(f'{prefix}_id')
-            name = data.pop(f'{prefix}_name')
+            username = data.pop(f'{prefix}_name')
             mark = 'X' if id_ == owner_id else '0'
             if id_ is None:
                 mark = None
-            data[prefix] = Player(id=id_, name=name, mark=mark)
+            data[prefix] = Player(id=id_, username=username, mark=mark)
         return cls(**data)
 
     def to_dict(self) -> dict:
