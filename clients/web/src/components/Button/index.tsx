@@ -11,47 +11,47 @@ interface IButton {
 }
 
 export const Button = ({
-	value,
-	onClick,
-	children,
-	classNames = [],
-	disabled = false,
+  value,
+  onClick,
+  children,
+  classNames = [],
+  disabled = false,
 }: IButton) => {
-	return (
-		<button
-			className={[
-				style.btn,
-				style.fuzzy,
-				!disabled ? style.btnActive : null,
-				...classNames,
-			].join(' ')}
-			onClick={onClick}
-			disabled={disabled}
-		>
-			{value || children}
-		</button>
-	);
+  return (
+    <button
+      className={[
+        style.btn,
+        style.fuzzy,
+        !disabled ? style.btnActive : null,
+        ...classNames,
+      ].join(' ')}
+      onClick={onClick}
+      disabled={disabled}
+    >
+      {value || children}
+    </button>
+  );
 };
 
 export const RoundedButton = ({
-	value,
-	onClick,
-	classNames = [],
-	disabled = false,
-	children,
+  value,
+  onClick,
+  classNames = [],
+  disabled = false,
+  children,
 }: IButton) => {
-	return (
-		<button
-			className={[
-				style.btn,
-				style.round,
-				!disabled ? style.btnActive : null,
-				...classNames,
-			].join(' ')}
-			onClick={onClick}
-			disabled={disabled}
-		>
-			{value || children}
-		</button>
-	);
+  return (
+    <button
+      className={[
+        style.btn,
+        style.round,
+        !disabled ? style.btnActive : null,
+        ...classNames,
+      ].join(' ')}
+      onClick={onClick}
+      disabled={disabled}
+    >
+      {value || children}
+    </button>
+  );
 };

@@ -30,7 +30,7 @@ def fake_game_object() -> Game:
         id=1,
         owner=Player(
             id=1,
-            name='test',
+            username='test',
             mark='X'
         ),
         opponent=None,

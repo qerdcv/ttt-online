@@ -12,7 +12,7 @@ async def test_success(client: TestClient, logged_user_opponent: User, game_obje
     assert response.status == 200
     data = await response.json()
     assert data['opponent']['id'] == logged_user_opponent.id
-    assert data['opponent']['name'] == logged_user_opponent.username
+    assert data['opponent']['username'] == logged_user_opponent.username
     assert data['current_state'] == State.IN_GAME.value
 
 

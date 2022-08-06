@@ -10,30 +10,30 @@ interface IPopUp {
 }
 
 export const PopUp: React.FC<IPopUp> = ({ closeEvent, children }) => {
-	const { popUpStack, onPopPopUpStack } = useContext(PopUpContext);
+  const { popUpStack, onPopPopUpStack } = useContext(PopUpContext);
 
-	const [className, setClassName] = useState(style.content.toString());
+  const [className, setClassName] = useState(style.content.toString());
 
-	const onClose = () => {
-		setClassName((prevClassName) => `${prevClassName} ${style.hidden}`);
+  const onClose = () => {
+    setClassName((prevClassName) => `${prevClassName} ${style.hidden}`);
 
-		if (closeEvent) {
-			setTimeout(closeEvent, 300);
-		}
-	};
+    if (closeEvent) {
+      setTimeout(closeEvent, 300);
+    }
+  };
 
-	return (
-		<div className={style.overlay}>
-			<div className={style.overlay} onClick={onClose} />
-			<div className={className}>
-				<div className={style.contentNav}>
-					{popUpStack.length > 1 && (
-						<RoundedButton onClick={onPopPopUpStack} value={'ᐊ'} />
-					)}
-					<RoundedButton onClick={onClose} value={'⨉'} />
-				</div>
-				{children}
-			</div>
-		</div>
-	);
+  return (
+    <div className={style.overlay}>
+      <div className={style.overlay} onClick={onClose} />
+      <div className={className}>
+        <div className={style.contentNav}>
+          {popUpStack.length > 1 && (
+            <RoundedButton onClick={onPopPopUpStack} value={'ᐊ'} />
+          )}
+          <RoundedButton onClick={onClose} value={'⨉'} />
+        </div>
+        {children}
+      </div>
+    </div>
+  );
 };

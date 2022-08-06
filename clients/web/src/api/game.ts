@@ -7,19 +7,19 @@ interface IGameStepRequest {
 }
 
 export const Game = {
-	async create(): Promise<AxiosResponse<IGame>> {
-		return await Api.post<IGame>('/api/games');
-	},
+  async create(): Promise<AxiosResponse<IGame>> {
+    return await Api.post<IGame>('/api/games');
+  },
 
-	async getByID(gameID = ''): Promise<AxiosResponse<IGame>> {
-		return await Api.get<IGame>(`/api/games/${gameID}`);
-	},
+  async getByID(gameID = ''): Promise<AxiosResponse<IGame>> {
+    return await Api.get<IGame>(`/api/games/${gameID}`);
+  },
 
-	async loginGame(gameID: number): Promise<AxiosResponse<IGame>> {
-		return await Api.patch<IGame>(`/api/games/${gameID}/login`);
-	},
+  async loginGame(gameID: number): Promise<AxiosResponse<IGame>> {
+    return await Api.patch<IGame>(`/api/games/${gameID}/login`);
+  },
 
-	async step(req: IGameStepRequest, gameID: number): Promise<AxiosResponse<IGame>> {
-		return await Api.patch<IGame>(`/api/games/${gameID}`, req);
-	}
+  async step(req: IGameStepRequest, gameID: number): Promise<AxiosResponse<IGame>> {
+    return await Api.patch<IGame>(`/api/games/${gameID}`, req);
+  }
 };

@@ -1,3 +1,5 @@
+import { IUser } from 'types/user';
+
 export type TField = Array<Array<Marks>>;
 export type Coords = number[];
 
@@ -15,7 +17,7 @@ export enum Marks {
 
 export interface IGame {
     id: number,
-    owner_id: number,
+    owner: IUser,
     step_count: number,
 
     field: TField,
@@ -23,22 +25,24 @@ export interface IGame {
     owner_mark: string,
     opponent_mark: string,
 
-    opponent_id?: number,
-    current_player_id?: number,
-    winner_id: number,
+    opponent?: IUser,
+    current_player?: IUser,
+    winner?: IUser,
 }
 
 export const defaultGame: IGame = {
-	current_state: GameState.pending,
-	field: [
-		[Marks.noneMark, Marks.noneMark, Marks.noneMark],
-		[Marks.noneMark, Marks.noneMark, Marks.noneMark],
-		[Marks.noneMark, Marks.noneMark, Marks.noneMark],
-	],
-	id: 0,
-	opponent_mark: Marks.opponentMark,
-	owner_id: 0,
-	owner_mark: Marks.ownerMark,
-	step_count: 0,
-	winner_id: 0
+  current_state: GameState.pending,
+  field: [
+    [Marks.noneMark, Marks.noneMark, Marks.noneMark],
+    [Marks.noneMark, Marks.noneMark, Marks.noneMark],
+    [Marks.noneMark, Marks.noneMark, Marks.noneMark],
+  ],
+  id: 0,
+  opponent_mark: Marks.opponentMark,
+  owner: {
+    id: 0,
+    username: '',
+  },
+  owner_mark: Marks.ownerMark,
+  step_count: 0,
 };
