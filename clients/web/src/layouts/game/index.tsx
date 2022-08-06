@@ -78,7 +78,7 @@ export const GameLayout = () => {
 
   useEffect(() => {
     let es: EventSource;
-    const sourceURL = !process.env.NODE_ENV
+    const sourceURL = !process.env.NODE_ENV || process.env.NODE_ENV !== 'development'
       ? `/api/games/${gameID}/sse`
       : `http://localhost:4444/api/games/${gameID}/sse`;
 
