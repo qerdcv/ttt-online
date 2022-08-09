@@ -9,7 +9,7 @@ from src.middlewares import auth
 
 async def init_pool(app):
     app['pool'] = await asyncpg.create_pool(
-        os.environ['MONOLITH_DB_URI']
+        os.environ['DB_URI']
     )
 
 

@@ -2,11 +2,13 @@ services:
   gateway:
     command: sh -c "adev runserver ."
     build:
+      context: ..
       target: dev
       dockerfile: ops/gateway/Dockerfile
     environment:
       ENV: ${ENV}
       SECRET: ${SECRET}
+      PYTHONUNBUFFERED: 1
     ports:
       - '8888:8000'
     volumes:
@@ -16,10 +18,15 @@ services:
     command: sh -c "pgrate -p ${MIGRATIONS_FOLDER} -d ${DB_URI} && jurigged -v main.py"
     build:
       target: dev
+      context: ..
       dockerfile: ops/profiler/Dockerfile
+    depends_on:
+      db:
+        condition: service_healthy
     environment:
       SECRET: ${SECRET}
       DB_URI: ${DB_URI}
+      PYTHONUNBUFFERED: 1
     ports:
       - '50051:50051'
     volumes:
@@ -33,7 +40,7 @@ services:
    environment:
      ENV: ${ENV}
      SECRET: ${SECRET}
-     MONOLITH_DB_URI: ${MONOLITH_DB_URI}
+     DB_URI: ${MONOLITH_DB_URI}
    ports:
      - '4444:8000'
    volumes:

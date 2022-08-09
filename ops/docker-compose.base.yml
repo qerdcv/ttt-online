@@ -1,23 +1,6 @@
 version: '2.1'
 
 services:
-  gateway:
-    build:
-      context: ..
-      dockerfile: ops/gateway/Dockerfile
-    environment:
-      PYTHONUNBUFFERED: 1
-
-  profiler:
-    build:
-      context: ..
-      dockerfile: ops/profiler/Dockerfile
-    depends_on:
-      db:
-        condition: service_healthy
-    environment:
-      PYTHONUNBUFFERED: 1
-
   ttt_online:
     build:
       context: ..
