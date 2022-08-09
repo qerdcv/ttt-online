@@ -13,7 +13,7 @@ class Envs(Enum):
 @dataclass
 class Config:
     env: Envs = Envs(os.environ['ENV'])
-    db_uri: str = os.environ['DB_URI']
+    db_uri: str = os.environ['MONOLITH_DB_URI']
     secret: str = os.environ['SECRET']
 
     base_dir: Path = Path(os.getcwd())

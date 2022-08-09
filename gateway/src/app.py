@@ -1,20 +1,14 @@
-import os
+import grpc
 
-import asyncpg
 from aiohttp import web
 
 from src.routes import routes
 from src.middlewares import auth
-
-
-async def init_pool(app):
-    app['pool'] = await asyncpg.create_pool(
-        os.environ['MONOLITH_DB_URI']
-    )
+from gen.profiler_pb2_grpc import ProfilerStub
 
 
 def create_app() -> web.Application:
     app = web.Application(middlewares=[auth])
     app.add_routes(routes)
-    app.on_startup.extend([init_pool])
+    app['profiler'] = ProfilerStub(grpc.aio.insecure_channel('profiler:50051'))
     return app
