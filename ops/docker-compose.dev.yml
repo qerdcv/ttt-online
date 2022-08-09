@@ -1,4 +1,17 @@
 services:
+  gateway:
+    command: sh -c "adev runserver ."
+    build:
+      target: dev
+      dockerfile: ops/gateway/Dockerfile
+    environment:
+      ENV: ${ENV}
+      SECRET: ${SECRET}
+    ports:
+      - '8888:8000'
+    volumes:
+      - ../gateway/:/gateway
+
   profiler:
     command: sh -c "pgrate -p ${MIGRATIONS_FOLDER} -d ${DB_URI} && jurigged -v main.py"
     build:
@@ -13,25 +26,27 @@ services:
       - ../profiler:/profiler
 
   ttt_online:
-   command: sh -c "pgrate -p ${MIGRATIONS_FOLDER} -d ${DB_URI} && adev runserver ."
+   command: sh -c "pgrate -p ${MIGRATIONS_FOLDER} -d ${MONOLITH_DB_URI} && adev runserver ."
    build:
      target: dev
      dockerfile: ops/ttt-online/Dockerfile
    environment:
      ENV: ${ENV}
      SECRET: ${SECRET}
-     DB_URI: ${DB_URI}
+     MONOLITH_DB_URI: ${MONOLITH_DB_URI}
    ports:
      - '4444:8000'
    volumes:
      - ../ttt-online/:/server
+
   db:
     environment:
       POSTGRES_USER: ${APP_DB_USERNAME}
       POSTGRES_PASSWORD: ${APP_DB_PASSWORD}
-      POSTGRES_DB: ${APP_DB_DATABASE}
+      POSTGRES_MULTIPLE_DATABASES: ${APP_DB_DATABASE},${MONOLITH_DB_DATABASE}
     volumes:
       - db:/var/lib/postgresql/data
+      - ./pg-init-scripts:/docker-entrypoint-initdb.d
     ports:
       - '5432:5432'
     healthcheck:
