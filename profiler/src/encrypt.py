@@ -1,4 +1,4 @@
-import jwt
+
 from cryptography.fernet import Fernet
 
 from src.config import Config
@@ -13,14 +13,6 @@ def encrypt(message: str) -> str:
 
 def decrypt(message: str) -> str:
     return FERNET.decrypt(message.encode('utf-8')).decode()
-
-
-def encrypt_jwt(**kwargs) -> str:
-    return jwt.encode(kwargs, Config.secret, algorithm='HS256')
-
-
-def decode_jwt(jwt_token: str) -> dict:
-    return jwt.decode(jwt_token, Config.secret, algorithms='HS256')
 
 
 def is_same_messages(hash_message: str, message: str) -> bool:

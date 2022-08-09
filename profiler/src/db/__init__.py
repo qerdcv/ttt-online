@@ -11,12 +11,12 @@ log = logging.getLogger(__name__)
 
 
 class UserCRUD:
-    obj = None
+    _obj = None
 
     def __new__(cls, *args, **kwargs):
-        if cls.obj is None:
-            cls.obj = super().__new__(cls, *args, **kwargs)
-        return cls.obj
+        if cls._obj is None:
+            cls._obj = super().__new__(cls, *args, **kwargs)
+        return cls._obj
 
     @staticmethod
     def get_query(query_name: str) -> t.Optional[str]:
@@ -26,21 +26,19 @@ class UserCRUD:
         except FileNotFoundError:
             log.error(f'Query {query_name} not found')
 
-    @classmethod
-    async def get(cls, user: User) -> User:
+    async def get(self, user: User) -> User:
         conn = await asyncpg.connect(Config.db_uri)
         user = await conn.fetchrow(
-            cls.get_query('get_user'),
+            self.get_query('get_user'),
             user.username
         )
         if user:
             return User(dict(user))
 
-    @classmethod
-    async def create(cls, user: User) -> User:
+    async def create(self, user: User) -> User:
         conn = await asyncpg.connect(Config.db_uri)
         user.uid = await conn.fetchval(
-            cls.get_query('create_user'),
+            self.get_query('create_user'),
             user.username, encrypt(user.password)
         )
         return user

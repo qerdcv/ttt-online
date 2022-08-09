@@ -1,9 +1,8 @@
 services:
-  app:
+  ttt_online:
     command: sh -c "pgrate -p ${MIGRATIONS_FOLDER} -d ${TEST_DB_URI} && python -m pytest -vv test/integration"
     build:
       target: test
-      dockerfile: ops/Dockerfile
     environment:
       ENV: ${ENV}
       SECRET: ${SECRET}

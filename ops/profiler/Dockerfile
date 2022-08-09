@@ -1,17 +1,12 @@
 FROM python:3 as base
-#WORKDIR /server
+
 WORKDIR /profiler
 COPY requirements.txt .
 RUN pip install -r requirements.txt
 COPY profiler/ .
-#COPY ttt-online/ .
-#EXPOSE 4444
 
 FROM base as dev
-RUN pip install watchdog[watchmedo]
-
-#FROM base as dev
-#RUN pip install aiohttp-devtools
+RUN pip install jurigged
 
 FROM base as test
 COPY requirements.test.txt .

@@ -2,7 +2,7 @@
 """Client and server classes corresponding to protobuf-defined services."""
 import grpc
 
-from gen import route_pb2 as route__pb2
+from gen import profiler_pb2 as gen_dot_profiler__pb2
 
 
 class ProfilerStub(object):
@@ -15,14 +15,14 @@ class ProfilerStub(object):
             channel: A grpc.Channel.
         """
         self.LoginUser = channel.unary_unary(
-                '/Profiler/LoginUser',
-                request_serializer=route__pb2.LoginUserRequest.SerializeToString,
-                response_deserializer=route__pb2.Response.FromString,
+                '/profiler.Profiler/LoginUser',
+                request_serializer=gen_dot_profiler__pb2.LoginUserRequest.SerializeToString,
+                response_deserializer=gen_dot_profiler__pb2.LoginUserResponse.FromString,
                 )
         self.CreateUser = channel.unary_unary(
-                '/Profiler/CreateUser',
-                request_serializer=route__pb2.CreateUserRequest.SerializeToString,
-                response_deserializer=route__pb2.Response.FromString,
+                '/profiler.Profiler/CreateUser',
+                request_serializer=gen_dot_profiler__pb2.CreateUserRequest.SerializeToString,
+                response_deserializer=gen_dot_profiler__pb2.CreateUserResponse.FromString,
                 )
 
 
@@ -46,17 +46,17 @@ def add_ProfilerServicer_to_server(servicer, server):
     rpc_method_handlers = {
             'LoginUser': grpc.unary_unary_rpc_method_handler(
                     servicer.LoginUser,
-                    request_deserializer=route__pb2.LoginUserRequest.FromString,
-                    response_serializer=route__pb2.Response.SerializeToString,
+                    request_deserializer=gen_dot_profiler__pb2.LoginUserRequest.FromString,
+                    response_serializer=gen_dot_profiler__pb2.LoginUserResponse.SerializeToString,
             ),
             'CreateUser': grpc.unary_unary_rpc_method_handler(
                     servicer.CreateUser,
-                    request_deserializer=route__pb2.CreateUserRequest.FromString,
-                    response_serializer=route__pb2.Response.SerializeToString,
+                    request_deserializer=gen_dot_profiler__pb2.CreateUserRequest.FromString,
+                    response_serializer=gen_dot_profiler__pb2.CreateUserResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
-            'Profiler', rpc_method_handlers)
+            'profiler.Profiler', rpc_method_handlers)
     server.add_generic_rpc_handlers((generic_handler,))
 
 
@@ -75,9 +75,9 @@ class Profiler(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/Profiler/LoginUser',
-            route__pb2.LoginUserRequest.SerializeToString,
-            route__pb2.Response.FromString,
+        return grpc.experimental.unary_unary(request, target, '/profiler.Profiler/LoginUser',
+            gen_dot_profiler__pb2.LoginUserRequest.SerializeToString,
+            gen_dot_profiler__pb2.LoginUserResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -92,8 +92,8 @@ class Profiler(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/Profiler/CreateUser',
-            route__pb2.CreateUserRequest.SerializeToString,
-            route__pb2.Response.FromString,
+        return grpc.experimental.unary_unary(request, target, '/profiler.Profiler/CreateUser',
+            gen_dot_profiler__pb2.CreateUserRequest.SerializeToString,
+            gen_dot_profiler__pb2.CreateUserResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
