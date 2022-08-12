@@ -1,4 +1,3 @@
-
 from cryptography.fernet import Fernet
 
 from src.config import Config

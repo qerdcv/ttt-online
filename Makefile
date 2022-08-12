@@ -13,11 +13,14 @@ DB_URI ?= postgres://${APP_DB_USERNAME}:${APP_DB_PASSWORD}@db:5432/${APP_DB_DATA
 PROFILER_DB_URI ?= postgres://${APP_DB_USERNAME}:${APP_DB_PASSWORD}@db:5432/${PROFILER_DB_DATABASE}
 TEST_DB_URI ?= postgres://test:test@db:5432/test
 
+# TTT-ONLINE ENVIRONMENT
+TTT_ONLINE_PORT ?= 4444
+
 # PROFILER ENVIRONMENT
 PROFILER_PORT ?= 50051
 
 # GATEWAY ENVIRONMENT
-GATEWAY_PORT ?= 8000
+GATEWAY_PORT ?= 8888
 PROFILER_URL ?= profiler:${PROFILER_PORT}
 COOKIE_AGE_DAYS ?= 7
 COOKIE_NAME ?= auth
@@ -30,7 +33,7 @@ COOKIE_NAME ?= auth
 help: ## Show help message
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
-run-all:
+run-all: ## Build and start all containers
 	$(COMPOSE_DEV) up --build --force-recreate -d
 	@echo API v1 expose on http://localhost:4444
 	@echo API v2 expose on http://localhost:8888
