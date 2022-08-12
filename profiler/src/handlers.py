@@ -23,11 +23,7 @@ class RouteServicer(profiler_pb2_grpc.ProfilerServicer):
             context.set_code(grpc.StatusCode.INVALID_ARGUMENT)
             context.set_details(json.dumps(e.to_primitive()))
             return profiler_pb2.LoginUserResponse()
-        except user.NotFound as e:
-            context.set_code(grpc.StatusCode.NOT_FOUND)
-            context.set_details(json.dumps(e.to_dict()))
-            return profiler_pb2.LoginUserResponse()
-        except user.WrongPassword as e:
+        except user.InvalidDate as e:
             context.set_code(grpc.StatusCode.INVALID_ARGUMENT)
             context.set_details(json.dumps(e.to_dict()))
             return profiler_pb2.LoginUserResponse()

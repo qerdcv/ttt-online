@@ -26,7 +26,7 @@ class UserCRUD:
         except FileNotFoundError:
             log.error(f'Query {query_name} not found')
 
-    async def get(self, user: User) -> User:
+    async def get(self, user: User) -> t.Optional[User]:
         conn = await asyncpg.connect(Config.db_uri)
         user = await conn.fetchrow(
             self.get_query('get_user'),

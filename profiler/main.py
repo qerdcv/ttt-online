@@ -1,5 +1,6 @@
 import asyncio
 import logging
+import os
 
 import grpc
 
@@ -13,8 +14,9 @@ async def main():
     server = grpc.aio.server()
     profiler_pb2_grpc.add_ProfilerServicer_to_server(
         RouteServicer(), server)
-    server.add_insecure_port('[::]:50051')
-    log.info("starting grpc server on port 50051...")
+    port = int(os.environ['PROFILER_PORT'])
+    server.add_insecure_port(f'localhost:{port}')
+    log.info(f'starting grpc server on port {port}...')
     await server.start()
     await server.wait_for_termination()
 

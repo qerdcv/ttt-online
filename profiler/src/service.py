@@ -1,6 +1,6 @@
 from src import encrypt, db
 from src.models.user import User
-from src.errors.user import NotFound, WrongPassword
+from src.errors.user import InvalidDate
 
 
 class Profiler:
@@ -15,10 +15,8 @@ class Profiler:
     async def login(self, user: User) -> User:
         user.validate()
         stored_user = await self._user_crud.get(user)
-        if stored_user is None:
-            raise NotFound
-        if not encrypt.is_same_messages(stored_user.password, user.password):
-            raise WrongPassword
+        if stored_user is None or not encrypt.is_same_messages(stored_user.password, user.password):
+            raise InvalidDate
         return stored_user
 
     async def create(self, user: User):
