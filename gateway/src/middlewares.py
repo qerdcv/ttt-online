@@ -3,17 +3,14 @@ from aiohttp.web import middleware
 from jwt.exceptions import DecodeError
 
 from src.encrypt import decode_jwt
-from src.models.user import User
+from src.config import Config
 
 
 @middleware
 async def auth(request: web.Request, handler) -> web.Response:
     request.user = None
     try:
-        print('-----')
-        print(decode_jwt(request.cookies.get('token')))
-        print('-----')
-        request.user = User(**decode_jwt(request.cookies.get('token')))
+        request.user = decode_jwt(request.cookies.get(Config.cookie_name))
     except DecodeError:
         pass
     return await handler(request)

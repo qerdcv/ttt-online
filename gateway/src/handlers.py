@@ -4,6 +4,7 @@ from aiohttp import web
 from grpc.aio import AioRpcError
 
 from gen import profiler_pb2, profiler_pb2_grpc
+from src.config import Config
 from src.encrypt import encrypt_jwt
 from src.models.user import User
 from src.status_codes import grpc_to_http
@@ -53,15 +54,15 @@ async def login(request: web.Request) -> web.Response:
         status=200
     )
     response.set_cookie(
-        name='token',
+        name=Config.cookie_name,
         value=encrypt_jwt(uid=stored_user.uid, username=stored_user.username),
         httponly=True,
-        max_age=None if remember else 3600 * 24 * 7
+        max_age=None if remember else Config.cookie_age
     )
     return response
 
 
 async def logout(request: web.Request) -> web.Response:
     response = web.json_response({'message': 'OK'})
-    response.del_cookie(name='token')
+    response.del_cookie(name=Config.cookie_name)
     return response

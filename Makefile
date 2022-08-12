@@ -5,13 +5,18 @@ COMPOSE_TEST ?= $(COMPOSE) -f ops/docker-compose.test.yml -p ttto-test
 ENV ?= dev
 APP_DB_USERNAME ?= ttt_online
 APP_DB_PASSWORD ?= ttt_online
-APP_DB_DATABASE ?= ttt_online_v2
-MONOLITH_DB_DATABASE ?= ttt_online_v1
+APP_DB_DATABASE ?= ttt_online
+PROFILER_DB_DATABASE ?= profiler_service
 SECRET ?= A55iwGUdDMUlBM1VpbkivhAssGW2f1Qclknipse11Gg=
 MIGRATIONS_FOLDER ?= ./src/db/migrations
 DB_URI ?= postgres://${APP_DB_USERNAME}:${APP_DB_PASSWORD}@db:5432/${APP_DB_DATABASE}
-MONOLITH_DB_URI ?= postgres://${APP_DB_USERNAME}:${APP_DB_PASSWORD}@db:5432/${MONOLITH_DB_DATABASE}
+PROFILER_DB_URI ?= postgres://${APP_DB_USERNAME}:${APP_DB_PASSWORD}@db:5432/${PROFILER_DB_DATABASE}
 TEST_DB_URI ?= postgres://test:test@db:5432/test
+
+GATEWAY_PORT ?= 8000
+PROFILER_URL ?= profiler:50051
+COOKIE_AGE_DAYS ?= 7
+COOKIE_NAME ?= auth
 
 .EXPORT_ALL_VARIABLES:
 
@@ -68,8 +73,8 @@ test-unit: ## Run unit tests
 
 generate-proto: ## Generate the Python code by proto file by service (route to service directory)
 	@if [ -d $(service) ]; then\
-		python3 -m grpc_tools.protoc -I gen=$(service)/proto --python_out=$(service) --grpc_python_out=$(service) $(service)/proto/*.proto;\
-		python3 -m grpc_tools.protoc -I gen=$(service)/proto --python_out=gateway --grpc_python_out=gateway $(service)/proto/*.proto;\
+		python3 -m grpc_tools.protoc -I gen=$(service)/proto --python_out=$(service) --python_out=gateway\
+		--grpc_python_out=$(service) --grpc_python_out=gateway $(service)/proto/*.proto;\
 		echo Python files have been generated in \"./$(service)/gen\";\
 	else\
  		echo service directory \"./$(service)\" not-found;\
