@@ -35,16 +35,15 @@ services:
 
   db:
     environment:
-      POSTGRES_USER: ${APP_DB_USERNAME}
-      POSTGRES_PASSWORD: ${APP_DB_PASSWORD}
+      POSTGRES_PASSWORD: postgres
       POSTGRES_MULTIPLE_DATABASES: ${APP_DB_DATABASE},${PROFILER_DB_DATABASE}
     volumes:
       - db:/var/lib/postgresql/data
-      - ./pg-init-scripts:/docker-entrypoint-initdb.d
+      - ./multi_db.sh:/docker-entrypoint-initdb.d/multi_db.sh
     ports:
       - '5432:5432'
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U $APP_DB_USERNAME" ]
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
 
 volumes:
   db:
