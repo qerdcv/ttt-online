@@ -8,3 +8,4 @@ class Config:
     db_uri: str = os.environ['DB_URI']
     secret: str = os.environ['SECRET']
     base_dir: Path = Path(os.getcwd())
+    port: int = int(os.environ['PROFILER_PORT'])
