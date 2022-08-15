@@ -7,6 +7,7 @@ COPY profiler/ .
 
 FROM base as dev
 RUN pip install jurigged
+CMD pgrate -p src/db/migrations -d postgres://$DB_USERNAME:$DB_PASSWORD@$DB_HOST:$DB_PORT/$DB_DATABASE && jurigged -v main.py
 
 FROM base as test
 COPY profiler/requirements.test.txt .

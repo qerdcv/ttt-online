@@ -7,6 +7,7 @@ COPY gateway/ .
 
 FROM base as dev
 RUN pip install aiohttp-devtools
+CMD adev runserver .
 
 FROM base as test
 COPY gateway/requirements.test.txt .

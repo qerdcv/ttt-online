@@ -10,6 +10,17 @@ from src.models.user import User
 log = logging.getLogger(__name__)
 
 
+async def get_connection() -> asyncpg.Connection:
+    db_config = Config.db
+    return await asyncpg.connect(
+        user=db_config.username,
+        password=db_config.password,
+        database=db_config.database,
+        host=db_config.host,
+        port=db_config.port,
+    )
+
+
 class UserCRUD:
     _obj = None
 
@@ -27,7 +38,7 @@ class UserCRUD:
             log.error(f'Query {query_name} not found')
 
     async def get(self, user: User) -> t.Optional[User]:
-        conn = await asyncpg.connect(Config.db_uri)
+        conn = await get_connection()
         user = await conn.fetchrow(
             self.get_query('get_user'),
             user.username
@@ -36,7 +47,7 @@ class UserCRUD:
             return User(dict(user))
 
     async def create(self, user: User) -> User:
-        conn = await asyncpg.connect(Config.db_uri)
+        conn = await get_connection()
         user.uid = await conn.fetchval(
             self.get_query('create_user'),
             user.username, encrypt(user.password)
