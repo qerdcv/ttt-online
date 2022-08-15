@@ -1,45 +1,33 @@
 services:
   gateway:
-    command: sh -c "adev runserver ."
+    ports:
+      - '8000:8000'
     build:
       target: dev
-    ports:
-      - '${GATEWAY_PORT}:${GATEWAY_PORT}'
     volumes:
       - ../gateway/:/gateway
 
   profiler:
-    command: sh -c "pgrate -p ${MIGRATIONS_FOLDER} -d ${PROFILER_DB_URI} && jurigged -v main.py"
     build:
       target: dev
-    environment:
-      PROFILER_PORT: ${PROFILER_PORT}
     ports:
-      - '${PROFILER_PORT}:${PROFILER_PORT}'
+      - '50051:50051'
     volumes:
       - ../profiler:/profiler
 
   ttt_online:
-   command: sh -c "pgrate -p ${MIGRATIONS_FOLDER} -d ${DB_URI} && adev runserver ."
    build:
      target: dev
      dockerfile: ops/ttt-online/Dockerfile
-   environment:
-     ENV: ${ENV}
-     SECRET: ${SECRET}
-     DB_URI: ${DB_URI}
-   ports:
-     - '${TTT_ONLINE_PORT}:8000'
    volumes:
      - ../ttt-online/:/server
 
   db:
-    environment:
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_MULTIPLE_DATABASES: ${APP_DB_DATABASE},${PROFILER_DB_DATABASE}
+    env_file:
+      - postgres/environment
     volumes:
       - db:/var/lib/postgresql/data
-      - ./multi_db.sh:/docker-entrypoint-initdb.d/multi_db.sh
+      - ./postgres/multi_db.sh:/docker-entrypoint-initdb.d/multi_db.sh
     ports:
       - '5432:5432'
     healthcheck:

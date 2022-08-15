@@ -10,8 +10,8 @@ log = logging.getLogger(__name__)
 
 def main():
     app = create_app()
-    log.info(f'started gateway service on {Config.port} port')
-    web.run_app(host='localhost', port=Config.port, app=app)
+    log.info(f'started gateway service on {Config.http_port} port')
+    web.run_app(host='0.0.0.0', port=Config.http_port, app=app)
 
 
 if __name__ == '__main__':

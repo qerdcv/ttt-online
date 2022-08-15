@@ -5,13 +5,9 @@ services:
     build:
       context: ..
       dockerfile: ops/gateway/Dockerfile
+    env_file:
+        - gateway/environment
     environment:
-      ENV: ${ENV}
-      SECRET: ${SECRET}
-      GATEWAY_PORT: ${GATEWAY_PORT}
-      PROFILER_URL: ${PROFILER_URL}
-      COOKIE_AGE_DAYS: ${COOKIE_AGE_DAYS}
-      COOKIE_NAME: ${COOKIE_NAME}
       PYTHONUNBUFFERED: 1
 
   profiler:
@@ -21,9 +17,9 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    env_file:
+      - profiler/environment
     environment:
-      SECRET: ${SECRET}
-      DB_URI: ${PROFILER_DB_URI}
       PYTHONUNBUFFERED: 1
 
   ttt_online:
@@ -33,8 +29,9 @@ services:
     depends_on:
       db:
         condition: service_healthy
-    environment:
-      PYTHONUNBUFFERED: 1
+    env_file:
+      - ttt-online/environment
+
 
   db:
     image: postgres:latest
