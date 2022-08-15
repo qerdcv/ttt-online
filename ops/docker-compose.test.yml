@@ -7,6 +7,7 @@ services:
       ENV: ${ENV}
       SECRET: ${SECRET}
       DB_URI: ${TEST_DB_URI}
+
   db:
     environment:
       POSTGRES_USER: test

@@ -1,14 +1,14 @@
 FROM python:3 as base
-EXPOSE 50051
-WORKDIR /profiler
-COPY profiler/requirements.txt .
+EXPOSE 8888
+WORKDIR /gateway
+COPY gateway/requirements.txt .
 RUN pip install -r requirements.txt
-COPY profiler/ .
+COPY gateway/ .
 
 FROM base as dev
-RUN pip install jurigged
+RUN pip install aiohttp-devtools
 
 FROM base as test
-COPY profiler/requirements.test.txt .
+COPY gateway/requirements.test.txt .
 COPY pytest.ini .
 RUN pip install -r requirements.test.txt

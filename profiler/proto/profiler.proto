@@ -3,8 +3,8 @@ syntax = "proto3";
 package profiler;
 
 service Profiler {
-  rpc LoginUser(LoginUserRequest) returns (Response) {}
-  rpc CreateUser(CreateUserRequest) returns (Response) {}
+  rpc LoginUser(LoginUserRequest) returns (LoginUserResponse);
+  rpc CreateUser(CreateUserRequest) returns (CreateUserResponse);
 }
 
 message LoginUserRequest {
@@ -17,7 +17,9 @@ message CreateUserRequest {
   string password = 2;
 }
 
-message Response {
+message LoginUserResponse {
   string uid = 1;
   string username = 2;
 }
+
+message CreateUserResponse {}

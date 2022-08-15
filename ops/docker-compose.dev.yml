@@ -1,14 +1,21 @@
 services:
-  profiler:
-    command: sh -c "pgrate -p ${MIGRATIONS_FOLDER} -d ${DB_URI} && jurigged -v main.py"
+  gateway:
+    command: sh -c "adev runserver ."
     build:
       target: dev
-      dockerfile: ops/profiler/Dockerfile
-    environment:
-      SECRET: ${SECRET}
-      DB_URI: ${DB_URI}
     ports:
-      - '50051:50051'
+      - '${GATEWAY_PORT}:${GATEWAY_PORT}'
+    volumes:
+      - ../gateway/:/gateway
+
+  profiler:
+    command: sh -c "pgrate -p ${MIGRATIONS_FOLDER} -d ${PROFILER_DB_URI} && jurigged -v main.py"
+    build:
+      target: dev
+    environment:
+      PROFILER_PORT: ${PROFILER_PORT}
+    ports:
+      - '${PROFILER_PORT}:${PROFILER_PORT}'
     volumes:
       - ../profiler:/profiler
 
@@ -22,20 +29,21 @@ services:
      SECRET: ${SECRET}
      DB_URI: ${DB_URI}
    ports:
-     - '4444:8000'
+     - '${TTT_ONLINE_PORT}:8000'
    volumes:
      - ../ttt-online/:/server
+
   db:
     environment:
-      POSTGRES_USER: ${APP_DB_USERNAME}
-      POSTGRES_PASSWORD: ${APP_DB_PASSWORD}
-      POSTGRES_DB: ${APP_DB_DATABASE}
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_MULTIPLE_DATABASES: ${APP_DB_DATABASE},${PROFILER_DB_DATABASE}
     volumes:
       - db:/var/lib/postgresql/data
+      - ./multi_db.sh:/docker-entrypoint-initdb.d/multi_db.sh
     ports:
       - '5432:5432'
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U $APP_DB_USERNAME" ]
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
 
 volumes:
   db:

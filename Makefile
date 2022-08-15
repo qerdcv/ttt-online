@@ -3,13 +3,27 @@ COMPOSE_DEV ?= $(COMPOSE) -f ops/docker-compose.dev.yml -p ttto-dev
 COMPOSE_TEST ?= $(COMPOSE) -f ops/docker-compose.test.yml -p ttto-test
 
 ENV ?= dev
-APP_DB_USERNAME ?= postgres
-APP_DB_PASSWORD ?= postgres
-APP_DB_DATABASE ?= postgres
+APP_DB_USERNAME ?= ttt_online
+APP_DB_PASSWORD ?= ttt_online
+APP_DB_DATABASE ?= ttt_online
+PROFILER_DB_DATABASE ?= profiler_service
 SECRET ?= A55iwGUdDMUlBM1VpbkivhAssGW2f1Qclknipse11Gg=
 MIGRATIONS_FOLDER ?= ./src/db/migrations
 DB_URI ?= postgres://${APP_DB_USERNAME}:${APP_DB_PASSWORD}@db:5432/${APP_DB_DATABASE}
+PROFILER_DB_URI ?= postgres://${APP_DB_USERNAME}:${APP_DB_PASSWORD}@db:5432/${PROFILER_DB_DATABASE}
 TEST_DB_URI ?= postgres://test:test@db:5432/test
+
+# TTT-ONLINE ENVIRONMENT
+TTT_ONLINE_PORT ?= 4444
+
+# PROFILER ENVIRONMENT
+PROFILER_PORT ?= 50051
+
+# GATEWAY ENVIRONMENT
+GATEWAY_PORT ?= 8888
+PROFILER_URL ?= profiler:${PROFILER_PORT}
+COOKIE_AGE_DAYS ?= 7
+COOKIE_NAME ?= auth
 
 .EXPORT_ALL_VARIABLES:
 
@@ -19,8 +33,16 @@ TEST_DB_URI ?= postgres://test:test@db:5432/test
 help: ## Show help message
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
+run-all: ## Build and start all containers
+	$(COMPOSE_DEV) up --build --force-recreate -d
+	@echo API v1 expose on http://localhost:4444
+	@echo API v2 expose on http://localhost:8888
+
 run-%: ## Build and start containers
 	$(COMPOSE_DEV) up --build --force-recreate -d $*
+
+explore-image-%: ## Explore a docker image by name
+	docker run --rm -it --entrypoint=/bin/bash $*
 
 logs-%: ## Attach to the containers logs
 	$(COMPOSE_DEV) logs -f $*
@@ -58,7 +80,8 @@ test-unit: ## Run unit tests
 
 generate-proto: ## Generate the Python code by proto file by service (route to service directory)
 	@if [ -d $(service) ]; then\
-		python3 -m grpc_tools.protoc -I gen=$(service)/proto --python_out=$(service) --grpc_python_out=$(service) $(service)/proto/*.proto;\
+		python3 -m grpc_tools.protoc -I gen=$(service)/proto --python_out=$(service) --python_out=gateway\
+		--grpc_python_out=$(service) --grpc_python_out=gateway $(service)/proto/*.proto;\
 		echo Python files have been generated in \"./$(service)/gen\";\
 	else\
  		echo service directory \"./$(service)\" not-found;\
