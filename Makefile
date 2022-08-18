@@ -3,6 +3,7 @@ COMPOSE_DEV ?= $(COMPOSE) -f ops/docker-compose.dev.yml -p ttto-dev
 COMPOSE_TEST ?= $(COMPOSE) -f ops/docker-compose.test.yml -p ttto-test
 
 TEST_DB_URI ?= postgres://test:test@db:5432/test
+SECRET ?= A55iwGUdDMUlBM1VpbkivhAssGW2f1Qclknipse11Gg=
 
 .EXPORT_ALL_VARIABLES:
 

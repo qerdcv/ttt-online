@@ -1,5 +1,5 @@
 class InvalidDate(Exception):
-    def __init__(self, message: str = 'invalid date'):
+    def __init__(self, message: str = 'invalid data'):
         self._message = message
         super().__init__(message)
 

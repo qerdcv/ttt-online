@@ -3,7 +3,7 @@ name: Lint
 on:
   push:
     paths:
-      - 'ttt-online/**.py'
+      - '**.py'
 
 jobs:
   build:
