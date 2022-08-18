@@ -1,14 +1,15 @@
 FROM python:3 as base
-WORKDIR /server
-COPY requirements.txt .
+EXPOSE 8888
+WORKDIR /gateway
+COPY gateway/requirements.txt .
 RUN pip install -r requirements.txt
-COPY ttt-online/ .
-EXPOSE 4444
+COPY gateway/ .
 
 FROM base as dev
 RUN pip install aiohttp-devtools
+CMD adev runserver .
 
 FROM base as test
-COPY requirements.test.txt .
+COPY gateway/requirements.test.txt .
 COPY pytest.ini .
 RUN pip install -r requirements.test.txt

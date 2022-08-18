@@ -1,14 +1,38 @@
 version: '2.1'
 
 services:
-  app:
+  gateway:
     build:
       context: ..
+      dockerfile: ops/gateway/Dockerfile
+    env_file:
+        - gateway/environment
+    environment:
+      PYTHONUNBUFFERED: 1
+
+  profiler:
+    build:
+      context: ..
+      dockerfile: ops/profiler/Dockerfile
     depends_on:
       db:
         condition: service_healthy
+    env_file:
+      - profiler/environment
     environment:
       PYTHONUNBUFFERED: 1
+
+  ttt_online:
+    build:
+      context: ..
+      dockerfile: ops/ttt-online/Dockerfile
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file:
+      - ttt-online/environment
+
+
   db:
     image: postgres:latest
     restart: always

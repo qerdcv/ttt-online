@@ -1,15 +1,19 @@
-import os
-
 import asyncpg
 from aiohttp import web
 
+from src.config import Config
 from src.routes import routes
 from src.middlewares import auth
 
 
 async def init_pool(app):
+    db_config = Config.db
     app['pool'] = await asyncpg.create_pool(
-        os.environ['DB_URI']
+        user=db_config.username,
+        password=db_config.password,
+        database=db_config.database,
+        host=db_config.host,
+        port=db_config.port,
     )
 
 
