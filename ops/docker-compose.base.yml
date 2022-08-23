@@ -1,9 +1,21 @@
 version: '2.1'
 
 services:
+  django:
+    build:
+      context: ..
+      dockerfile: ops/django/Dockerfile
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      PYTHONUNBUFFERED: 1
+      PYTHONDONTWRITEBYTECODE: 1
+
   app:
     build:
       context: ..
+      dockerfile: ops/aiohttp/Dockerfile
     depends_on:
       db:
         condition: service_healthy

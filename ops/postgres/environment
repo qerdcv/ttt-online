@@ -1,0 +1,2 @@
+POSTGRES_PASSWORD=postgres
+POSTGRES_MULTIPLE_DATABASES=ttt_online,ttt_online_django
