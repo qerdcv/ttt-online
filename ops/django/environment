@@ -1,0 +1,5 @@
+DB_USERNAME=ttt_online
+DB_PASSWORD=ttt_online
+DB_DATABASE=ttt_online_django
+DB_HOST=db
+DB_PORT=5432

@@ -2,13 +2,6 @@ COMPOSE ?= docker-compose -f ops/docker-compose.base.yml
 COMPOSE_DEV ?= $(COMPOSE) -f ops/docker-compose.dev.yml -p ttto-dev
 COMPOSE_TEST ?= $(COMPOSE) -f ops/docker-compose.test.yml -p ttto-test
 
-ENV ?= dev
-APP_DB_USERNAME ?= postgres
-APP_DB_PASSWORD ?= postgres
-APP_DB_DATABASE ?= postgres
-SECRET ?= A55iwGUdDMUlBM1VpbkivhAssGW2f1Qclknipse11Gg=
-MIGRATIONS_FOLDER ?= ./src/db/migrations
-DB_URI ?= postgres://${APP_DB_USERNAME}:${APP_DB_PASSWORD}@db:5432/${APP_DB_DATABASE}
 TEST_DB_URI ?= postgres://test:test@db:5432/test
 
 .EXPORT_ALL_VARIABLES:
@@ -21,7 +14,17 @@ help: ## Show help message
 
 run: ## Build and start containers
 	$(COMPOSE_DEV) up --build --force-recreate -d
-	@echo http://localhost:4444
+	@echo API v1 expose on http://localhost:4444
+	@echo API v2 expose on http://localhost:8000
+
+run-%: ## Build and start containers
+	$(COMPOSE_DEV) up --build --force-recreate -d $*
+
+explore-image-%: ## Explore a docker image by name
+	docker run --rm -it --entrypoint=/bin/bash $*
+
+logs-%: ## Attach to the containers logs
+	$(COMPOSE_DEV) logs -f $*
 
 logs: ## Attach to the containers logs
 	$(COMPOSE_DEV) logs -f
@@ -44,6 +47,10 @@ setup-testenv: ## Setup test environment (currently only database)
 migrate-testenv: ## Applying migrations for test environment (affter test-db is up)
 	@echo Applying migrations
 	@pgrate -p ./ttt-online/src/db/migrations -d postgres://test:test@localhost:5433/test?sslmode=disable
+
+migrations-%: ## Applying migrations for django
+	python ttt-online-django/manage.py makemigrations $*
+	python ttt-online-django/manage.py migrate
 
 cleanup-testenv: ## Clenup test environment
 	docker rm -f test-db

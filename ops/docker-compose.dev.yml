@@ -1,28 +1,31 @@
 services:
+  django:
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ../ttt-online-django/:/server
+    ports:
+      - '8000:8000'
+    env_file:
+      - django/environment
+
   app:
-    command: sh -c "pgrate -p ${MIGRATIONS_FOLDER} -d ${DB_URI} && adev runserver ."
     build:
       target: dev
-      dockerfile: ops/Dockerfile
-    environment:
-      ENV: ${ENV}
-      SECRET: ${SECRET}
-      DB_URI: ${DB_URI}
     ports:
       - '4444:8000'
     volumes:
       - ../ttt-online/:/server
+
   db:
-    environment:
-      POSTGRES_USER: ${APP_DB_USERNAME}
-      POSTGRES_PASSWORD: ${APP_DB_PASSWORD}
-      POSTGRES_DB: ${APP_DB_DATABASE}
+    env_file:
+      - postgres/environment
     volumes:
       - db:/var/lib/postgresql/data
+      - ./postgres/multi_db.sh:/docker-entrypoint-initdb.d/multi_db.sh
     ports:
       - '5432:5432'
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U $APP_DB_USERNAME" ]
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
 
 volumes:
   db:
