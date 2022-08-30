@@ -100,7 +100,7 @@ async def get_games(request: web.Request) -> web.Response:
     games = await db.get_game_list(request.app['pool'], paginator.page, paginator.limit)
     return web.json_response(
         {
-            'games': [game.to_dict() for game in games],
+            'games': games.to_dict(),
             'paginator': paginator.to_json()
         },
         status=200
@@ -132,14 +132,14 @@ async def make_step(request: web.Request) -> web.Response:
 
 @auth_required
 async def get_game_history(request: web.Request) -> web.Response:
-    game_history = await db.get_game_history(
+    games = await db.get_game_history(
         request.app['pool'], int(request.match_info['_id'])
     )
 
-    if not game_history:
+    if not games:
         return web.json_response({'message': 'game not found'}, status=404)
 
     return web.json_response(
-        [game.to_dict() for game in game_history],
+        games.to_dict(),
         status=200
     )

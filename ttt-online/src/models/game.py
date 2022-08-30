@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import json
 import math
 import random
@@ -5,6 +7,7 @@ import typing as t
 from enum import Enum
 from dataclasses import dataclass, asdict
 
+from asyncpg import Record
 from schematics.models import Model
 from schematics.types import IntType, ListType
 
@@ -120,3 +123,14 @@ class Game:
             if not res[prefix]['id']:
                 res[prefix] = None
         return res
+
+
+class Games(list):
+    def from_record(self, rows: Record) -> Games:
+        games = [dict(row) for row in rows]
+        for game in games:
+            self.append(Game.from_dict(game))
+        return self
+
+    def to_dict(self) -> t.List[dict]:
+        return [game.to_dict() for game in self]

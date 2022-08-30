@@ -5,7 +5,7 @@ import typing as t
 from asyncpg.pool import Pool
 from src.config import Config
 from src.encrypt import encrypt
-from src.models.game import Game
+from src.models.game import Game, Games
 from src.models.user import User
 from src.models.lobby import Lobby
 
@@ -59,13 +59,13 @@ async def get_game(pool: Pool, _id: int) -> t.Optional[Game]:
         return Game.from_dict(dict(game))
 
 
-async def get_game_list(pool: Pool, page: int, limit: int) -> t.List[Game]:
+async def get_game_list(pool: Pool, page: int, limit: int) -> Games:
     async with pool.acquire() as conn:
         rows = await conn.fetch(
             get_query('get_game_list'),
             (page - 1) * limit, limit
         )
-    return [Game.from_dict(dict(row)) for row in rows]
+    return Games().from_record(rows)
 
 
 async def get_total_games(pool: Pool) -> int:
@@ -73,14 +73,13 @@ async def get_total_games(pool: Pool) -> int:
         return await conn.fetchval(get_query('get_total_games'))
 
 
-async def get_game_history(pool: Pool, game_id: int) -> t.List[Game]:
+async def get_game_history(pool: Pool, game_id: int) -> Games:
     async with pool.acquire() as conn:
         rows = await conn.fetch(
             get_query('get_game_history'),
             game_id
         )
-    rows = [dict(row) for row in rows]
-    return [Game.from_dict(row) for row in rows]
+    return Games().from_record(rows)
 
 
 async def update_game(pool: Pool, game: Game):
