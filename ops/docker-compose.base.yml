@@ -4,11 +4,13 @@ services:
   app:
     build:
       context: ..
+      dockerfile: ops/ttt-online/Dockerfile
     depends_on:
       db:
         condition: service_healthy
     environment:
       PYTHONUNBUFFERED: 1
+
   db:
     image: postgres:latest
     restart: always
