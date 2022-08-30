@@ -128,3 +128,18 @@ async def make_step(request: web.Request) -> web.Response:
         return web.json_response({'message': 'cell is already occupied'}, status=409)
     await db.update_game(request.app['pool'], game)
     return web.json_response({'message': game.to_dict()}, status=200)
+
+
+@auth_required
+async def get_game_history(request: web.Request) -> web.Response:
+    game_history = await db.get_game_history(
+        request.app['pool'], int(request.match_info['_id'])
+    )
+
+    if not game_history:
+        return web.json_response({'message': 'game not found'}, status=404)
+
+    return web.json_response(
+        [game.to_dict() for game in game_history],
+        status=200
+    )

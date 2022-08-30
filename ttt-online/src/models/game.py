@@ -1,3 +1,4 @@
+import json
 import math
 import random
 import typing as t
@@ -110,6 +111,7 @@ class Game:
             if id_ is None:
                 mark = None
             data[prefix] = Player(id=id_, username=username, mark=mark)
+        data['field'] = json.loads(data['field'])
         return cls(**data)
 
     def to_dict(self) -> dict:
