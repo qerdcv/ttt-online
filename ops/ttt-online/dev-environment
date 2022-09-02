@@ -1,5 +1,5 @@
 ENV=dev
-SECRET=A55iwGUdDMUlBM1VpbkivhAssGW2f1Qclknipse11Gg=
+SECRET=S:$qHR}KZ,"m\G24I>[obUy/vcDPF!'7&fA1s=nrOdB(@hQ*{az+3i8LM_6]N`#.<u%;5g9ep^)YVWC-lwt|kjTEx~X?J0
 HTTP_PORT=4444
 DB_USERNAME=ttt_online
 DB_PASSWORD=ttt_online

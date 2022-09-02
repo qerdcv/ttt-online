@@ -1,18 +1,17 @@
+from hashlib import pbkdf2_hmac
+
 import jwt
-from cryptography.fernet import Fernet
 
 from src.settings import SECRET
 
 
-FERNET = Fernet(SECRET)
+COUNT_ITERATION = 100_000
 
 
-def encrypt(message: str) -> str:
-    return FERNET.encrypt(message.encode()).decode('utf-8')
-
-
-def decrypt(message: str) -> str:
-    return FERNET.decrypt(message.encode('utf-8')).decode()
+def encrypt_password(password: str) -> str:
+    return pbkdf2_hmac(
+        'sha256', password.encode(), SECRET.encode() * 2, COUNT_ITERATION
+    ).hex()
 
 
 def encrypt_jwt(**kwargs) -> str:
@@ -21,7 +20,3 @@ def encrypt_jwt(**kwargs) -> str:
 
 def decode_jwt(jwt_token: str) -> dict:
     return jwt.decode(jwt_token, SECRET, algorithms='HS256')
-
-
-def is_same_messages(hash_message: str, message: str) -> bool:
-    return decrypt(hash_message) == message

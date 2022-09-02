@@ -4,7 +4,7 @@ import typing as t
 
 from asyncpg.pool import Pool
 from src.config import Config
-from src.encrypt import encrypt
+from src.encrypt import encrypt_password
 from src.models.game import Game, Games
 from src.models.user import User
 from src.models.lobby import Lobby
@@ -25,7 +25,7 @@ async def create_user(pool: Pool, user: User) -> User:
     async with pool.acquire() as conn:
         user.id = await conn.fetchval(
             get_query('create_user'),
-            user.username, encrypt(user.password)
+            user.username, encrypt_password(user.password)
         )
     return user
 

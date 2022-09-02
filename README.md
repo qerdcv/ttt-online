@@ -12,6 +12,17 @@ TicTacToe Online
 
 # Server part of TTT-online
 
+## Generate salt for hashing password
+
+```python
+import random
+from string import printable
+
+salt = list(printable.strip())
+random.shuffle(salt)
+result = ''.join(salt)
+```
+
 ## TESTS
 
 ---
