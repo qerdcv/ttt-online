@@ -66,7 +66,7 @@ async def logout(request: web.Request) -> web.Response:
 @auth_required
 async def create_game(request: web.Request) -> web.Response:
     game = await db.create_game(request.app['pool'], request.user)
-    return web.json_response(game.to_dict(), status=201)
+    return web.json_response(game.to_primitive(), status=201)
 
 
 @auth_required
@@ -80,14 +80,14 @@ async def login_game(request: web.Request) -> web.Response:
         return web.json_response({'message': 'user already in game'}, status=409)
     game.set_opponent(request.user)
     await db.update_game(request.app['pool'], game)
-    return web.json_response(game.to_dict(), status=200)
+    return web.json_response(game.to_primitive(), status=200)
 
 
 async def get_game(request: web.Request) -> web.Response:
     game = await db.get_game(request.app['pool'], int(request.match_info['_id']))
     if game is None:
         return web.json_response({'message': 'game not found'}, status=404)
-    return web.json_response(game.to_dict(), status=200)
+    return web.json_response(game.to_primitive(), status=200)
 
 
 async def get_games(request: web.Request) -> web.Response:
@@ -100,7 +100,7 @@ async def get_games(request: web.Request) -> web.Response:
     games = await db.get_game_list(request.app['pool'], paginator.page, paginator.limit)
     return web.json_response(
         {
-            'games': games.to_dict(),
+            'games': games.to_primitive(),
             'paginator': paginator.to_json()
         },
         status=200
@@ -127,10 +127,9 @@ async def make_step(request: web.Request) -> web.Response:
     except CellOccupied:
         return web.json_response({'message': 'cell is already occupied'}, status=409)
     await db.update_game(request.app['pool'], game)
-    return web.json_response({'message': game.to_dict()}, status=200)
+    return web.json_response({'message': game.to_primitive()}, status=200)
 
 
-@auth_required
 async def get_game_history(request: web.Request) -> web.Response:
     games = await db.get_game_history(
         request.app['pool'], int(request.match_info['_id'])
@@ -140,6 +139,6 @@ async def get_game_history(request: web.Request) -> web.Response:
         return web.json_response({'message': 'game not found'}, status=404)
 
     return web.json_response(
-        games.to_dict(),
+        games.to_primitive(),
         status=200
     )

@@ -8,7 +8,7 @@ async def test_success(client: TestClient, game_object: Game):
     response = await client.get(f'/api/games/{game_object.id}')
     assert response.status == 200
     data = await response.json()
-    assert data == game_object.to_dict()
+    assert data == game_object.to_primitive()
 
 
 async def test_game_not_found(client: TestClient, game_object: Game):

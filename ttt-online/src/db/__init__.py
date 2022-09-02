@@ -36,7 +36,7 @@ async def create_game(pool: Pool, user: User) -> Game:
             get_query('create_game'),
             user.id
         )
-    return Game.from_dict(dict(game))
+    return Game.from_record(game)
 
 
 async def get_user(pool: Pool, user: User) -> t.Optional[User]:
@@ -56,7 +56,7 @@ async def get_game(pool: Pool, _id: int) -> t.Optional[Game]:
             _id
         )
     if game:
-        return Game.from_dict(dict(game))
+        return Game.from_record(game)
 
 
 async def get_game_list(pool: Pool, page: int, limit: int) -> Games:
@@ -65,7 +65,7 @@ async def get_game_list(pool: Pool, page: int, limit: int) -> Games:
             get_query('get_game_list'),
             (page - 1) * limit, limit
         )
-    return Games().from_record(rows)
+    return Games.from_record(rows)
 
 
 async def get_total_games(pool: Pool) -> int:
@@ -79,7 +79,7 @@ async def get_game_history(pool: Pool, game_id: int) -> Games:
             get_query('get_game_history'),
             game_id
         )
-    return Games().from_record(rows)
+    return Games.from_record(rows)
 
 
 async def update_game(pool: Pool, game: Game):

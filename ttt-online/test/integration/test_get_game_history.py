@@ -84,25 +84,25 @@ async def test_success(first_coord: t.Tuple[int], coords_list: t.Tuple[t.Tuple[i
             json={'coords': coords}
         )
         await client.get('/api/logout')
-    await login_user(test_user)
     response = await client.get(
         f'/api/games/{game_with_opponent.id}/history'
     )
     assert response.status == 200
     data = await response.json()
-    assert len(data) == len(coords_list) + 2
+    assert len(data) == len(coords_list) + 2  # 2 is count of history objects that
+    # is not contains steps in coords list
+    for idx, game in enumerate(data):
+        if idx > 0:
+            if idx == 1:
+                coord_x, coord_y = first_coord
+            else:
+                coord_x, coord_y = coords_list[idx - 2]
+            assert game['field'][coord_x][coord_y] != ''
+        else:
+            assert game['field'] == [['', '', ''], ['', '', ''], ['', '', '']]
 
 
-async def test_unauth(client: TestClient, game_object: Game):
-    response = await client.get(
-        f'/api/games/{game_object.id}/history'
-    )
-    assert response.status == 401
-    data = await response.json()
-    assert data['message'] == 'unauthorized'
-
-
-async def test_game_not_found(client: TestClient, logged_user: User, game_with_opponent: Game):
+async def test_game_not_found(client: TestClient, game_with_opponent: Game):
     response = await client.get(f'/api/games/{game_with_opponent.id + 1}/history')
     assert response.status == 404
     data = await response.json()

@@ -105,7 +105,11 @@ class Game:
             self.current_state = State.DONE.value
 
     @classmethod
-    def from_dict(cls, data: dict):
+    def from_record(cls, row: Record) -> Game:
+        return cls.from_dict(dict(row))
+
+    @classmethod
+    def from_dict(cls, data: dict) -> Game:
         owner_id = data['owner_id']
         for _, prefix in enumerate(cls.player_prefixes):
             id_ = data.pop(f'{prefix}_id')
@@ -117,7 +121,7 @@ class Game:
         data['field'] = json.loads(data['field'])
         return cls(**data)
 
-    def to_dict(self) -> dict:
+    def to_primitive(self) -> dict:
         res = asdict(self)
         for prefix in self.player_prefixes:
             if not res[prefix]['id']:
@@ -126,11 +130,11 @@ class Game:
 
 
 class Games(list):
-    def from_record(self, rows: Record) -> Games:
-        games = [dict(row) for row in rows]
-        for game in games:
-            self.append(Game.from_dict(game))
-        return self
+    @classmethod
+    def from_record(cls, rows: Record) -> Games:
+        games = cls()
+        games.extend([Game.from_record(row) for row in rows])
+        return games
 
-    def to_dict(self) -> t.List[dict]:
-        return [game.to_dict() for game in self]
+    def to_primitive(self) -> t.List[dict]:
+        return [game.to_primitive() for game in self]
