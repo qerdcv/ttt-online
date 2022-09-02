@@ -7,7 +7,7 @@ from src.models.user import User
 from src.models.paginator import Paginator
 from src.models.game import State, Step
 from src.errors.game import CellOccupied
-from src.encrypt import encrypt_jwt, is_same_messages
+from src.encrypt import encrypt_jwt, encrypt_password
 from src.decorators import auth_required
 
 
@@ -39,7 +39,7 @@ async def login(request: web.Request) -> web.Response:
     stored_user = await db.get_user(request.app['pool'], user)
     if stored_user is None:
         return web.json_response({'message': 'user don\'t exists'}, status=404)
-    if not is_same_messages(stored_user.password, user.password):
+    if encrypt_password(user.password) != stored_user.password:
         return web.json_response({'message': 'wrong password'}, status=400)
     response = web.json_response(
         {
