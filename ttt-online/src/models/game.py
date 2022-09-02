@@ -1,9 +1,13 @@
+from __future__ import annotations
+
+import json
 import math
 import random
 import typing as t
 from enum import Enum
 from dataclasses import dataclass, asdict
 
+from asyncpg import Record
 from schematics.models import Model
 from schematics.types import IntType, ListType
 
@@ -101,7 +105,11 @@ class Game:
             self.current_state = State.DONE.value
 
     @classmethod
-    def from_dict(cls, data: dict):
+    def from_record(cls, row: Record) -> Game:
+        return cls.from_dict(dict(row))
+
+    @classmethod
+    def from_dict(cls, data: dict) -> Game:
         owner_id = data['owner_id']
         for _, prefix in enumerate(cls.player_prefixes):
             id_ = data.pop(f'{prefix}_id')
@@ -110,11 +118,23 @@ class Game:
             if id_ is None:
                 mark = None
             data[prefix] = Player(id=id_, username=username, mark=mark)
+        data['field'] = json.loads(data['field'])
         return cls(**data)
 
-    def to_dict(self) -> dict:
+    def to_primitive(self) -> dict:
         res = asdict(self)
         for prefix in self.player_prefixes:
             if not res[prefix]['id']:
                 res[prefix] = None
         return res
+
+
+class Games(list):
+    @classmethod
+    def from_record(cls, rows: Record) -> Games:
+        games = cls()
+        games.extend([Game.from_record(row) for row in rows])
+        return games
+
+    def to_primitive(self) -> t.List[dict]:
+        return [game.to_primitive() for game in self]

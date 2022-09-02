@@ -1,28 +1,23 @@
 services:
   app:
-    command: sh -c "pgrate -p ${MIGRATIONS_FOLDER} -d ${DB_URI} && adev runserver ."
     build:
       target: dev
-      dockerfile: ops/Dockerfile
-    environment:
-      ENV: ${ENV}
-      SECRET: ${SECRET}
-      DB_URI: ${DB_URI}
     ports:
       - '4444:8000'
     volumes:
       - ../ttt-online/:/server
+    env_file:
+      - ttt-online/dev-environment
+
   db:
-    environment:
-      POSTGRES_USER: ${APP_DB_USERNAME}
-      POSTGRES_PASSWORD: ${APP_DB_PASSWORD}
-      POSTGRES_DB: ${APP_DB_DATABASE}
+    env_file:
+      - postgres/environment
     volumes:
       - db:/var/lib/postgresql/data
     ports:
       - '5432:5432'
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U $APP_DB_USERNAME" ]
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
 
 volumes:
   db:

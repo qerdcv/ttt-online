@@ -5,7 +5,7 @@ import typing as t
 from asyncpg.pool import Pool
 from src.config import Config
 from src.encrypt import encrypt
-from src.models.game import Game
+from src.models.game import Game, Games
 from src.models.user import User
 from src.models.lobby import Lobby
 
@@ -36,9 +36,7 @@ async def create_game(pool: Pool, user: User) -> Game:
             get_query('create_game'),
             user.id
         )
-    game = Game.from_dict(dict(game))
-    game.field = json.loads(game.field)
-    return game
+    return Game.from_record(game)
 
 
 async def get_user(pool: Pool, user: User) -> t.Optional[User]:
@@ -57,27 +55,31 @@ async def get_game(pool: Pool, _id: int) -> t.Optional[Game]:
             get_query('get_game'),
             _id
         )
-    if game is not None:
-        game = Game.from_dict(dict(game))
-        game.field = json.loads(game.field)
-    return game
+    if game:
+        return Game.from_record(game)
 
 
-async def get_game_list(pool: Pool, page: int, limit: int) -> t.List[Game]:
+async def get_game_list(pool: Pool, page: int, limit: int) -> Games:
     async with pool.acquire() as conn:
         rows = await conn.fetch(
             get_query('get_game_list'),
             (page - 1) * limit, limit
         )
-    games = [Game.from_dict(dict(row)) for row in rows]
-    for game in games:
-        game.field = json.loads(game.field)
-    return games
+    return Games.from_record(rows)
 
 
 async def get_total_games(pool: Pool) -> int:
     async with pool.acquire() as conn:
         return await conn.fetchval(get_query('get_total_games'))
+
+
+async def get_game_history(pool: Pool, game_id: int) -> Games:
+    async with pool.acquire() as conn:
+        rows = await conn.fetch(
+            get_query('get_game_history'),
+            game_id
+        )
+    return Games.from_record(rows)
 
 
 async def update_game(pool: Pool, game: Game):

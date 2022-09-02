@@ -1,1 +1,1 @@
-TRUNCATE users, games;
+TRUNCATE games_history, users, games;

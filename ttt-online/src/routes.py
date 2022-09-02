@@ -13,5 +13,6 @@ routes = [
     web.post(path='/api/games', handler=handlers.create_game),
     web.patch(path='/api/games/{_id:\\d+}/login', handler=handlers.login_game),
     web.get(path='/api/games/{_id:\\d+}/sse', handler=sse.stream),
-    web.patch(path='/api/games/{_id:\\d+}', handler=handlers.make_step)
+    web.patch(path='/api/games/{_id:\\d+}', handler=handlers.make_step),
+    web.get(path='/api/games/{_id:\\d+}/history', handler=handlers.get_game_history)
 ]

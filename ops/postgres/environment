@@ -1,0 +1,3 @@
+POSTGRES_USER=ttt_online
+POSTGRES_PASSWORD=ttt_online
+POSTGRES_DB=ttt_online
