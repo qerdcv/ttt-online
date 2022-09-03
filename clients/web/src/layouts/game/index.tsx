@@ -1,6 +1,7 @@
 import axios from 'axios';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 import { AuthContext, IAuthContext } from 'context/auth.context';
 import { useHttp } from 'hooks/useHttp';
@@ -38,14 +39,15 @@ interface IWinnerProps {
 }
 
 const Winner = ({ winner }: IWinnerProps) => {
+  const { t } = useTranslation();
   let title: string;
 
   const winnerName = winner?.username;
 
   if (!winnerName) {
-    title = 'DRAW!';
+    title = t`DRAW!`;
   } else {
-    title = `${winnerName} WON!`;
+    title = `${winnerName} ` + t`WON!`;
   }
 
   return (
@@ -56,6 +58,7 @@ const Winner = ({ winner }: IWinnerProps) => {
 export const GameLayout = () => {
   const navigate = useNavigate();
   const [game, setGame] = useState<IGame>(defaultGame);
+  const { t } = useTranslation();
   const { user } = useContext<IAuthContext>(AuthContext);
   const { gameID = '' } = useParams();
   const { loading, request } = useHttp<IGame>();
@@ -98,7 +101,7 @@ export const GameLayout = () => {
   return (
     <>
       <div className={styles.game}>
-        <h1>Game ID: {game.id}</h1>
+        <h1>{ t`Game ID` }: {game.id}</h1>
         <Players
           isInGame={game.current_state === GameState.inGame}
           owner={game.owner}
@@ -115,7 +118,7 @@ export const GameLayout = () => {
         {game.current_state === GameState.done && (
           <>
             <Winner winner={game.winner} />
-            <Button value='Show history' onClick={() => navigate('history')}/>
+            <Button value={ t`Show history` } onClick={() => navigate('history')}/>
           </>
         )}
       </div>

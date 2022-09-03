@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 
@@ -15,6 +16,7 @@ interface ILoginGameForm {
 
 export const LoginGame = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const { register, handleSubmit, formState: { errors } } = useForm<ILoginGameForm>();
   const { request, loading, error } = useHttp();
 
@@ -26,17 +28,17 @@ export const LoginGame = () => {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className={styles.loginGame}>
       <div className={formStyles.formControl}>
-        <label htmlFor="gameID">Game ID:</label>
+        <label htmlFor="gameID">{ t`Game ID` }:</label>
         <input type="number" min="1" pattern="\d*" autoFocus {...register('gameID', {
           required: {
             value: true,
-            message: 'Game ID is required!'
+            message: t`Game ID is required!`
           }
         })} />
         <span className={formStyles.formControlError}>{errors.gameID?.message}</span>
       </div>
       <div className={formStyles.formControl}>
-        <Button value={'Join Game!'} disabled={loading}/>
+        <Button value={t`Join Game!`} disabled={loading}/>
       </div>
       <span className={formStyles.formControlError}>{error.message}</span>
     </form>

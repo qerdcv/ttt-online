@@ -21,6 +21,8 @@
 }
 
 .navbar {
+  display: flex;
+
   &Item {
     display: inline;
     margin: 0 10px;

@@ -1,6 +1,7 @@
 import React, { useContext, useEffect } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 import { Checkbox } from 'components/Form';
 import { Button } from 'components/Button';
@@ -20,6 +21,7 @@ interface ILoginForm {
 }
 
 export const Login = () => {
+  const { t } = useTranslation();
   const {
     register,
     handleSubmit,
@@ -46,58 +48,58 @@ export const Login = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
-      <div className={formStyles.formControl}>
-        <div className={formStyles.formControl}>
-          <label htmlFor="username">Username:</label>
-          <input type="text" {...register('username', {
+    <form onSubmit={ handleSubmit(onSubmit) } className={ styles.form }>
+      <div className={ formStyles.formControl }>
+        <div className={ formStyles.formControl }>
+          <label htmlFor="username">{ t`Username` }:</label>
+          <input type="text" { ...register('username', {
             required: {
               value: true,
-              message: 'Username is required',
+              message: t`Username is required`
             },
             minLength: {
               value: 4,
-              message: 'Username is too short (min 4)'
+              message: t`Username is too short (min 4)`
             },
             maxLength: {
               value: 30,
-              message: 'Username is too long (max 30)'
+              message: t`Username is too long (max 30)`
             }
-          })} />
-          <span className={formStyles.formControlError}>
-            {errors.username?.message}
+          }) } />
+          <span className={ formStyles.formControlError }>
+            { errors.username?.message }
           </span>
         </div>
 
-        <div className={formStyles.formControl}>
-          <label htmlFor="password">Password:</label>
-          <input type="password" {...register('password', {
+        <div className={ formStyles.formControl }>
+          <label htmlFor="password">{ t`Password` }:</label>
+          <input type="password" { ...register('password', {
             required: {
               value: true,
-              message: 'Password is required',
+              message: t`Password is required`,
             },
             minLength: {
               value: 4,
-              message: 'Password is too short (min 4)'
+              message: t`Password is too short (min 4)`
             },
             maxLength: {
               value: 30,
-              message: 'Password is too long (max 30)'
+              message: t`Password is too long (max 30)`
             }
-          })} />
-          <span className={formStyles.formControlError}>
-            {errors.password?.message}
+          })}/>
+          <span className={ formStyles.formControlError }>
+            { errors.password?.message }
           </span>
         </div>
 
-        <div className={formStyles.formControl}>
-          <Checkbox label={'Remember?'} name={'remember'} onChange={onRememberClick}/>
+        <div className={ formStyles.formControl }>
+          <Checkbox label={ t`Remember?` } name={ 'remember' } onChange={ onRememberClick }/>
         </div>
 
-        <span className={formStyles.formControlError}>{error.message}</span>
+        <span className={ formStyles.formControlError }>{ error.message }</span>
       </div>
 
-      <Button value="Login" disabled={!!Object.keys(errors).length || loading}/>
+      <Button value="Login" disabled={ !!Object.keys(errors).length || loading }/>
     </form>
   );
 };
@@ -110,6 +112,7 @@ interface IRegisterForm {
 
 
 export const Register = () => {
+  const { t } = useTranslation();
   const {
     register,
     handleSubmit,
@@ -124,54 +127,54 @@ export const Register = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
-      <div className={formStyles.formControl}>
-        <div className={formStyles.formControl}>
-          <label htmlFor="username">Username:</label>
-          <input type="text" {...register('username', {
+    <form onSubmit={ handleSubmit(onSubmit) } className={ styles.form }>
+      <div className={ formStyles.formControl }>
+        <div className={ formStyles.formControl }>
+          <label htmlFor="username">{ t`Username` }:</label>
+          <input type="text" { ...register('username', {
             required: {
               value: true,
-              message: 'Username is required',
+              message: t`Username is required`
             },
             minLength: {
               value: 4,
-              message: 'Username is too short (min 4)'
+              message: t`Username is too short (min 4)`
             },
             maxLength: {
               value: 30,
-              message: 'Username is too long (max 30)'
+              message: t`Username is too long (max 30)`
             }
-          })} />
-          <span className={formStyles.formControlError}>
-            {errors.username?.message}
+          }) } />
+          <span className={ formStyles.formControlError }>
+            { errors.username?.message }
           </span>
         </div>
 
-        <div className={formStyles.formControl}>
-          <label htmlFor="password">Password:</label>
-          <input type="password" {...register('password', {
+        <div className={ formStyles.formControl }>
+          <label htmlFor="password">{ t`Password` }:</label>
+          <input type="password" { ...register('password', {
             required: {
               value: true,
-              message: 'Password is required',
+              message: t`Password is required`,
             },
             minLength: {
               value: 4,
-              message: 'Password is too short (min 4)'
+              message: t`Password is too short (min 4)`
             },
             maxLength: {
               value: 30,
-              message: 'Password is too long (max 30)'
+              message: t`Password is too long (max 30)`
             }
-          })} />
-          <span className={formStyles.formControlError}>
-            {errors.password?.message}
+          }) } />
+          <span className={ formStyles.formControlError }>
+            { errors.password?.message }
           </span>
         </div>
 
-        <span className={formStyles.formControlError}>{error.message}</span>
+        <span className={ formStyles.formControlError }>{ error.message }</span>
       </div>
 
-      <Button value="register" disabled={!!Object.keys(errors).length || loading}/>
+      <Button value="register" disabled={ !!Object.keys(errors).length || loading }/>
     </form>
   );
 };

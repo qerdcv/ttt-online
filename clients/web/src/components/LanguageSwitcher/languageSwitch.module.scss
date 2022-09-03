@@ -1,0 +1,34 @@
+.languageSwitcher {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin: 0 10px;
+
+  cursor: pointer;
+  user-select: none;
+
+  .arrow {
+    &Active {
+      transform: rotate(180deg);
+    }
+  }
+
+  .dropdown {
+    position: absolute;
+    top: 100%;
+    overflow: hidden;
+
+    display: flex;
+    flex-direction: column;
+
+    height: 0;
+
+    &Item {
+      margin: 10px 0;
+    }
+
+    &Active {
+      height: auto;
+    }
+  }
+}

@@ -1,6 +1,7 @@
 import axios from 'axios';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 import { useHttp } from 'hooks/useHttp';
 import { Game } from 'api/game';
@@ -24,18 +25,19 @@ interface IWinnerProps {
 }
 
 const Winner = ({ winner }: IWinnerProps) => {
+  const { t } = useTranslation();
   let title: string;
 
   const winnerName = winner?.username;
 
   if (!winnerName) {
-    title = 'DRAW!';
+    title = t`DRAW!`;
   } else {
-    title = `${winnerName} WON!`;
+    title = `${winnerName} ` + t`WON!`;
   }
 
   return (
-    <h1 className={styles.historyWinner}>{title}</h1>
+    <h1 className={styles.gameWinner}>{title}</h1>
   );
 };
 
@@ -44,6 +46,7 @@ export const GameHistory = () => {
   const [game, setGame] = useState<IGame>(defaultGame);
   const [games, setGames] = useState<Array<IGame>>();
   const [currentGameCnt, setCurrentGameCnt] = useState(0);
+  const { t } = useTranslation();
   const { gameID = '' } = useParams();
   const { loading, request } = useHttp<Array<IGame>>();
 
@@ -102,7 +105,7 @@ export const GameHistory = () => {
   return (
     <>
       <div className={styles.history}>
-        <h1>Game ID: {game.id}</h1>
+        <h1>{t`Game ID`}: {game.id}</h1>
         <Players
           isInGame={game.current_state === GameState.inGame}
           owner={game.owner}

@@ -1,4 +1,5 @@
 import React, { useContext, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button } from 'components/Button';
 import { PopUp } from 'components/PopUp';
 import {
@@ -13,6 +14,7 @@ import { AuthContext } from 'context/auth.context';
 import styles from 'components/QuickGame/quick.module.scss';
 
 export const QuickGame = (): React.ReactElement => {
+  const { t } = useTranslation();
   const { isAuthenticated } = useContext(AuthContext);
   const { popUpStack, resetPopUpStack, onPushPopUpStack } =
     useContext(PopUpContext);
@@ -30,9 +32,9 @@ export const QuickGame = (): React.ReactElement => {
 
   return (
     <main className={styles.main}>
-      <h1 className={styles.mainTitle}>Quick Game</h1>
+      <h1 className={styles.mainTitle}>{ t`Quick Game` }</h1>
       <Button
-        value="Play !"
+        value={t`Play !`}
         classNames={[styles.mainBtn]}
         onClick={ isAuthenticated()
           ? onPushPopUpStack.bind(null, Stack.StartMenu)
