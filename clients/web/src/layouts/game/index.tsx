@@ -6,27 +6,15 @@ import { AuthContext, IAuthContext } from 'context/auth.context';
 import { useHttp } from 'hooks/useHttp';
 import { Game } from 'api/game';
 
-import { Field } from 'layouts/game/field';
+import { Field } from 'components/Game/Field';
 import { Button } from 'components/Button';
 
 import { defaultGame, GameState, IGame } from 'types/game';
 
 import styles from 'layouts/game/game.module.scss';
 import { IUser } from 'types/user';
+import { Players } from 'components/Game/Players';
 
-interface IPlayerProps {
-    title: string,
-    isActive: boolean,
-    child?: React.ReactNode,
-}
-
-const Player = ({ title, isActive }: IPlayerProps) => {
-  return (
-    <div className={isActive ? styles.gameActivePlayer : ''}>
-      {title}
-    </div>
-  );
-};
 
 interface IJoinButton {
     gameID: number,
@@ -101,19 +89,7 @@ export const GameLayout = () => {
     };
   }, [setGame, handleSourceEvent, navigate, request, gameID]);
 
-  const getOpponentTitle = (): string => {
-    const title = game.opponent?.username || 'Opponent';
 
-    if (game.opponent === null) {
-      return title + ' (not joined)';
-    }
-
-    if (user?.id === game.opponent?.id) {
-      return title + ' (you)';
-    }
-
-    return title;
-  };
 
   if (loading) {
     return <h1>LOADING....</h1>;
@@ -123,12 +99,12 @@ export const GameLayout = () => {
     <>
       <div className={styles.game}>
         <h1>Game ID: {game.id}</h1>
-        <div className={styles.gamePlayers}>
-          <Player isActive={game.current_state === GameState.inGame && game.current_player?.id === game.owner.id}
-            title={`${game.owner.username || 'Owner'} ${game.owner.id === user?.id ? '(you)' : ''}`}/>
-          <Player isActive={game.current_state === GameState.inGame && game.current_player?.id === game.opponent?.id}
-            title={getOpponentTitle()}/>
-        </div>
+        <Players
+          isInGame={game.current_state === GameState.inGame}
+          owner={game.owner}
+          opponent={game.opponent}
+          currentPlayer={game.current_player}
+        />
         <div>
           <h3>{game.current_state}</h3>
           <Field field={game?.field} gameID={game.id} />
@@ -137,10 +113,12 @@ export const GameLayout = () => {
           <JoinButton gameID={game.id}/>
         )}
         {game.current_state === GameState.done && (
-          <Winner winner={game.winner} />
+          <>
+            <Winner winner={game.winner} />
+            <Button value='Show history' onClick={() => navigate('history')}/>
+          </>
         )}
       </div>
     </>
-
   );
 };

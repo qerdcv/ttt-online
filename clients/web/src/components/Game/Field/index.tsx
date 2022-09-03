@@ -1,7 +1,7 @@
 import React from 'react';
 import { Coords, Marks, TField } from 'types/game';
 
-import styles from 'layouts/game/field.module.scss';
+import styles from 'components/Game/Field/field.module.scss';
 import { Game } from 'api/game';
 import { useHttp } from 'hooks/useHttp';
 

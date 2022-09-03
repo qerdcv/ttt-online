@@ -12,18 +12,4 @@
   &Winner, &JoinButton {
     margin: 10px 0;
   }
-
-  &Players {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-
-    margin: 10px 0;
-    height: 100px;
-    width: 100%;
-  }
-
-  &ActivePlayer {
-    border-bottom: 2px solid $lightGreen;
-  }
 }

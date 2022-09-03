@@ -9,6 +9,7 @@ import authLayout from 'layouts/auth';
 
 import { AuthContext } from 'context/auth.context';
 import { IUser } from 'types/user';
+import { GameHistory } from 'layouts/history';
 
 function App(): React.ReactElement {
   const [user, setUser] = useState<IUser | null>(null);
@@ -39,7 +40,10 @@ function App(): React.ReactElement {
             <Route path="login" element={<authLayout.Login />} />
             <Route path="register" element={<authLayout.Register />} />
           </Route>
-          <Route path="/games/:gameID" element={<GameLayout />}/>
+          <Route path="games">
+            <Route path=":gameID" element={<GameLayout />}/>
+            <Route path=":gameID/history" element={<GameHistory />}/>
+          </Route>
           <Route path="*" element={<Error code={404}/>}/>
         </Routes>
         <Footer/>
