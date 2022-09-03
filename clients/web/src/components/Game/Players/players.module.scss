@@ -1,0 +1,15 @@
+@import "src/styles/colors";
+
+.players {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+
+  margin: 10px 0;
+  height: 100px;
+  width: 100%;
+
+  &Active {
+    border-bottom: 2px solid $lightGreen;
+  }
+}
