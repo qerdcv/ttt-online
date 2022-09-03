@@ -13,6 +13,10 @@ import { Players } from 'components/Game/Players';
 
 import styles from 'layouts/history/history.module.scss';
 
+enum KeyupEvents {
+  ARROW_LEFT = 'ArrowLeft',
+  ARROW_RIGHT = 'ArrowRight',
+}
 
 interface IWinnerProps {
   child?: React.ReactNode,
@@ -39,6 +43,7 @@ export const GameHistory = () => {
   const navigate = useNavigate();
   const [game, setGame] = useState<IGame>(defaultGame);
   const [games, setGames] = useState<Array<IGame>>();
+  const [currentGameCnt, setCurrentGameCnt] = useState(0);
   const { gameID = '' } = useParams();
   const { loading, request } = useHttp<Array<IGame>>();
 
@@ -54,18 +59,44 @@ export const GameHistory = () => {
     }
   }, [request, gameID, navigate]);
 
+  const handleKeyDownEvent = useCallback((e: KeyboardEvent) => {
+    switch (e.code) {
+    case KeyupEvents.ARROW_LEFT:
+      if (currentGameCnt > 0) {
+        setCurrentGameCnt((prevGameCnt) => --prevGameCnt);
+      }
+      break;
+    case KeyupEvents.ARROW_RIGHT:
+      if (currentGameCnt < (games?.length || 0) - 1) {
+        setCurrentGameCnt((prevGameCnt) => ++prevGameCnt);
+      }
+      break;
+    }
+  }, [setCurrentGameCnt, games?.length, currentGameCnt]);
+
   useEffect(() => {
     loadGames().then().catch(console.error);
   }, [loadGames]);
+
+  useEffect(() => {
+    window.addEventListener('keydown', handleKeyDownEvent);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDownEvent);
+    };
+  }, [handleKeyDownEvent]);
+
+  useEffect(() => {
+    if (games) {
+      setGame(games[currentGameCnt]);
+    }
+  }, [currentGameCnt, games, setGame]);
 
   if (loading) {
     return <h1>LOADING....</h1>;
   }
 
   const handleRangeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (games) {
-      setGame(games[+e.currentTarget.value]);
-    }
+    setCurrentGameCnt(+e.currentTarget.value);
   };
 
   return (
@@ -85,7 +116,15 @@ export const GameHistory = () => {
         {game.current_state === GameState.done && (
           <Winner winner={game.winner} />
         )}
-        <input className={styles.historyRange} type="range" min='0' max={(games?.length || 0) - 1} defaultValue={0} onChange={handleRangeChange}/>
+        <input
+          className={styles.historyRange}
+          type="range"
+          min="0"
+          max={(games?.length || 0) - 1}
+          value={currentGameCnt}
+          onChange={handleRangeChange}
+          onKeyDown={() => false}
+        />
       </div>
     </>
   );
