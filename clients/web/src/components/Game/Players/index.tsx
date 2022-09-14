@@ -30,7 +30,8 @@ export const Players = ({ isInGame, owner, opponent, currentPlayer }: IPlayersPr
   const { t } = useTranslation();
   const { user } = useContext<IAuthContext>(AuthContext);
   const getOpponentTitle = (): string => {
-    const title = opponent?.username || 'Opponent';
+    const opponentTitle = t`Opponent`;
+    const title = opponent?.username || opponentTitle;
 
     if (opponent === null) {
       return title + ' ('+t`not joined`+')';
