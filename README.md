@@ -10,6 +10,8 @@
 
 TicTacToe Online
 
+Check on [https://ttto.qerdcv.com](https://ttto.qerdcv.com)
+
 # Server part of TTT-online
 
 ## Generate salt for hashing password
