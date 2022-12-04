@@ -25,5 +25,7 @@
   "not joined": "not joined",
   "Opponent": "Opponent",
   "Owner": "Owner",
-  "To play, you must be Authorized!": "To play, you must be Authorized!"
+  "To play, you must be Authorized!": "To play, you must be Authorized!",
+  "Login": "Login",
+  "Register": "Register"
 }

@@ -1,10 +1,11 @@
-import style from 'components/Button/button.module.scss';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
+import style from 'components/Button/button.module.scss';
 
 interface IButton {
   classNames?: string[];
   disabled?: boolean;
-  value?: string;
+  value: string;
   children?: React.ReactNode;
 
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
@@ -17,6 +18,8 @@ export const Button = ({
   classNames = [],
   disabled = false,
 }: IButton) => {
+  const { t } = useTranslation();
+  console.log(value);
   return (
     <button
       className={[
@@ -28,7 +31,7 @@ export const Button = ({
       onClick={onClick}
       disabled={disabled}
     >
-      {value || children}
+      {t(value) || children}
     </button>
   );
 };
@@ -40,6 +43,7 @@ export const RoundedButton = ({
   disabled = false,
   children,
 }: IButton) => {
+  const { t } = useTranslation();
   return (
     <button
       className={[
@@ -51,7 +55,7 @@ export const RoundedButton = ({
       onClick={onClick}
       disabled={disabled}
     >
-      {value || children}
+      {t(value) || children}
     </button>
   );
 };

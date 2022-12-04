@@ -34,7 +34,7 @@ export const QuickGame = (): React.ReactElement => {
     <main className={styles.main}>
       <h1 className={styles.mainTitle}>{ t`Quick Game` }</h1>
       <Button
-        value={t`Play !`}
+        value='Play !'
         classNames={[styles.mainBtn]}
         onClick={ isAuthenticated()
           ? onPushPopUpStack.bind(null, Stack.StartMenu)

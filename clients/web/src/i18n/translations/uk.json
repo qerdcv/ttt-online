@@ -25,5 +25,7 @@
   "not joined": "не під'єднався",
   "Opponent": "Суперник",
   "Owner": "Власник",
-  "To play, you must be Authorized!": "Щоб грати, потрібно авторизуватись!"
+  "To play, you must be Authorized!": "Щоб грати, потрібно авторизуватись!",
+  "Login": "Увійти",
+  "Register": "Зареєструватись"
 }

@@ -118,7 +118,7 @@ export const GameLayout = () => {
         {game.current_state === GameState.done && (
           <>
             <Winner winner={game.winner} />
-            <Button value={ t`Show history` } onClick={() => navigate('history')}/>
+            <Button value='Show history' onClick={() => navigate('history')}/>
           </>
         )}
       </div>

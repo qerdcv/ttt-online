@@ -174,7 +174,7 @@ export const Register = () => {
         <span className={ formStyles.formControlError }>{ error.message }</span>
       </div>
 
-      <Button value="register" disabled={ !!Object.keys(errors).length || loading }/>
+      <Button value="Register" disabled={ !!Object.keys(errors).length || loading }/>
     </form>
   );
 };

@@ -38,7 +38,7 @@ export const LoginGame = () => {
         <span className={formStyles.formControlError}>{errors.gameID?.message}</span>
       </div>
       <div className={formStyles.formControl}>
-        <Button value={t`Join Game!`} disabled={loading}/>
+        <Button value='Join Game!' disabled={loading}/>
       </div>
       <span className={formStyles.formControlError}>{error.message}</span>
     </form>
